@@ -54,7 +54,7 @@ class _MainNavigatorPageState extends State<MainNavigatorPage> with SingleTicker
       // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: Icon(Icons.compare_arrows_outlined),
+        child: Icon(Icons.history),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNav(controller: pageController),

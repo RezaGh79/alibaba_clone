@@ -83,16 +83,23 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginRequest() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return MainNavigatorPage();
+        },
+      ),
+    );
+    return;
+
     var username = usernameController.text;
     var password = passwordController.text;
     // var response = sendGet();
     // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainNavigatorPage()));
 
     final uri = Uri.parse("${GlobalVariables.BASE_URL}/api/login");
-    final headers = {
-      'Content-Type': 'application/json',
-      'cookie': GlobalVariables.cookie
-    };
+    final headers = {'Content-Type': 'application/json', 'cookie': GlobalVariables.cookie};
     Map<String, dynamic> body = {'username': username, 'password': password};
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');

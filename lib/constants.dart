@@ -4,3 +4,19 @@ const kPrimaryColor = Color(0xFF247DFF);
 const kPrimaryLightColor = Color(0xFFDBEAFF);
 
 const double defaultPadding = 16.0;
+
+
+List<String> monthList = [
+  "فروردین",
+  "اردیبهشت",
+  "خرداد",
+  "تیر",
+  "مرداد",
+  "شهریور",
+  "مهر",
+  "آبان",
+  "آذر",
+  "دی",
+  "بهمن",
+  "اسفند"
+];

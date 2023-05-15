@@ -7,6 +7,8 @@ import '../../../../GlobalVariables.dart';
 import '../../../../Strings.dart';
 import 'package:http/http.dart';
 
+import '../../../../constants.dart';
+
 class BusPage extends StatefulWidget {
   const BusPage({Key? key}) : super(key: key);
 
@@ -18,20 +20,6 @@ class _BusPageState extends State<BusPage> {
   var origin = "";
   var destination = "";
   String? travelDate = "";
-  List<String> monthList = [
-    "فروردین",
-    "اردیبهشت",
-    "خرداد",
-    "تیر",
-    "مرداد",
-    "شهریور",
-    "مهر",
-    "آبان",
-    "آذر",
-    "دی",
-    "بهمن",
-    "اسفند"
-  ];
   bool hideChoosingOriginAndDestination = false;
 
   @override

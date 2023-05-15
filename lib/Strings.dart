@@ -4,6 +4,7 @@ class Strings {
   static const String registerButton = "ثبت نام";
   static const String loginButton = "ورود";
   static const String password = "رمز عبور";
+  static const String disCount = "کد تخفیف";
   static const String mobile = "شماره همراه";
   static const String repeatPassword = "تکرار رمز عبور";
   static const String username = "نام کاربری";

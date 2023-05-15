@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // import 'package:native_shared_preferences/native_shared_preferences.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../GlobalVariables.dart';
@@ -31,6 +32,7 @@ class _SignUpFormState extends State<SignUpForm> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController doublePasswordController = TextEditingController();
   OtpFieldController otpController = OtpFieldController();
+  late SharedPreferences prefs;
 
   int _counter = 0;
   late StreamController<int> _events;
@@ -42,7 +44,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   void initState() {
-    _events = new StreamController<int>();
+    initSharedPref();
+    _events = StreamController<int>();
     _events.add(60);
     super.initState();
   }
@@ -108,6 +111,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Directionality(
             textDirection: TextDirection.rtl,
             child: TextFormField(
+              obscureText: true,
               controller: doublePasswordController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
@@ -127,8 +131,9 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: defaultPadding / 2),
           ElevatedButton(
             onPressed: () {
-              _startTimer();
-              alertD(context);
+              signUpDataValid(usernameController.text, mobileNumberController.text,
+                  passwordController.text, doublePasswordController.text);
+
               // showOtpAlert(context);
               // if (otpText == "") {
               //   signUpDataValid(usernameController.text, mobileNumberController.text, passwordController.text,
@@ -151,68 +156,71 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   late Timer _timer;
-  String _timeString = "";
 
-  showOtpAlert(BuildContext context) {
-    // _timer.
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("تایید"),
-      onPressed: () {},
-    );
-    // Widget continueButton = TextButton(
-    //   child: Text("Continue"),
-    //   onPressed: () {},
-    // );
+  // showOtpAlert(BuildContext context) {
+  //   // _timer.
+  //   // set up the buttons
+  //   Widget cancelButton = TextButton(
+  //     child: Text("تایید"),
+  //     onPressed: () {},
+  //   );
+  //   // Widget continueButton = TextButton(
+  //   //   child: Text("Continue"),
+  //   //   onPressed: () {},
+  //   // );
+  //
+  //   AlertDialog alert = AlertDialog(
+  //     title: Directionality(
+  //         textDirection: TextDirection.rtl, child: Text("رمز یکبار مصرف را وارد نمایید")),
+  //     content: Container(
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           OTPTextField(
+  //               controller: otpController,
+  //               length: 6,
+  //               width: MediaQuery.of(context).size.width,
+  //               textFieldAlignment: MainAxisAlignment.spaceAround,
+  //               fieldWidth: 42,
+  //               fieldStyle: FieldStyle.box,
+  //               outlineBorderRadius: 15,
+  //               style: TextStyle(fontSize: 17),
+  //               onCompleted: (pin) {
+  //                 setState(() {});
+  //                 setState(() {
+  //                   buttonText = "تایید ورود دو مرحله ای";
+  //                   otpText = pin;
+  //                 });
+  //               }),
+  //           Text(_timeString),
+  //         ],
+  //       ),
+  //     ),
+  //     actions: [
+  //       cancelButton,
+  //       // continueButton,
+  //     ],
+  //   );
+  //
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
-    AlertDialog alert = AlertDialog(
-      title: Directionality(textDirection: TextDirection.rtl, child: Text("رمز یکبار مصرف را وارد نمایید")),
-      content: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            OTPTextField(
-                controller: otpController,
-                length: 6,
-                width: MediaQuery.of(context).size.width,
-                textFieldAlignment: MainAxisAlignment.spaceAround,
-                fieldWidth: 42,
-                fieldStyle: FieldStyle.box,
-                outlineBorderRadius: 15,
-                style: TextStyle(fontSize: 17),
-                onCompleted: (pin) {
-                  setState(() {});
-                  setState(() {
-                    buttonText = "تایید ورود دو مرحله ای";
-                    otpText = pin;
-                  });
-                }),
-            Text(_timeString),
-          ],
-        ),
-      ),
-      actions: [
-        cancelButton,
-        // continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  signUpDataValid(String username, String mobile, String password, String doublePassword) {
+  signUpDataValid(String username, String mobile, String password, String doublePassword) async {
     if (username == "" || mobile == "" || password == "" || doublePassword == "") {
       showAlertDialog(context, "اطلاعات نادرست", "همه اطلاعات را وارد کنید و دوباره امتحان کنید");
     } else if (password != doublePassword) {
       showAlertDialog(context, "اطلاعات نادرست", "رمز عبور و تکرار رمز عبور با هم برابر نیست");
     } else {
-      signUp(username, mobile, password);
+      if (await signUp(username, mobile, password)) {
+        _startTimer();
+        alertD(context);
+      }
     }
   }
 
@@ -227,8 +235,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(title)]),
+      content: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(message)]),
       actions: [okButton],
     );
 
@@ -240,7 +248,7 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  void signUp(String username, String mobile, String password) async {
+  Future<bool> signUp(String username, String mobile, String password) async {
     final uri = Uri.parse("${GlobalVariables.BASE_URL}/api/register");
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {'username': username, 'password': password, 'phoneNumber': mobile};
@@ -255,13 +263,17 @@ class _SignUpFormState extends State<SignUpForm> {
     );
 
     print(response.body);
+    final Map parsed = json.decode(response.body);
 
-    if (response.statusCode < 400) {
+    if (parsed['status'] != 400) {
+      return true;
       // print(response.body);
-      var recentMessages = SignUpMessageModel.fromJson(json.decode(response.body));
+      // var recentMessages = SignUpMessageModel.fromJson(json.decode(response.body));
       // (json.decode(response.body)).map((i) => SignUpMessageModel.fromJson(i));
     } else {
-      throw Exception('Failed to load album');
+      showAlertDialog(context, "شماره تلفن تکراری", "با یک شماره دیگر مجدد امتحان کنید");
+      return false;
+      // throw Exception('Failed to load album');
     }
   }
 
@@ -283,10 +295,12 @@ class _SignUpFormState extends State<SignUpForm> {
     );
 
     print(response.body);
+    final Map parsed = json.decode(response.body);
 
     if (response.statusCode < 400) {
       // print(response.body);
-      var recentMessages = (json.decode(response.body) as List).map((i) => SignUpMessageModel.fromJson(i)).toList();
+      var recentMessages =
+          (json.decode(response.body) as List).map((i) => SignUpMessageModel.fromJson(i)).toList();
     } else {
       // throw Exception('Failed to load album');
     }
@@ -307,7 +321,15 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void alertD(BuildContext ctx) {
+    Widget okButton = TextButton(
+      child: const Text("تایید"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        validateSignUp();
+      },
+    );
     var alert = AlertDialog(
+        actions: [okButton],
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
         backgroundColor: Colors.grey[100],
         elevation: 0.0,
@@ -320,6 +342,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    Text("رمز دو مرحله ای که پیامک شده را وارد نمایید"),
+                    SizedBox(height: 10),
                     OTPTextField(
                         controller: otpController,
                         length: 6,
@@ -337,7 +361,9 @@ class _SignUpFormState extends State<SignUpForm> {
                           });
                         }),
                     SizedBox(height: 15),
-                    Text(formatedTime(_counter)), //new column child
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Text(formatTime(_counter))]), //new column child
                   ],
                 ),
               );
@@ -350,11 +376,19 @@ class _SignUpFormState extends State<SignUpForm> {
         });
   }
 
-  formatedTime(int timeInSecond) {
+  formatTime(int timeInSecond) {
     int sec = timeInSecond % 60;
     int min = (timeInSecond / 60).floor();
     String minute = min.toString().length <= 1 ? "0$min" : "$min";
     String second = sec.toString().length <= 1 ? "0$sec" : "$sec";
     return "$minute : $second";
+  }
+
+  Future<void> initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('counter', 10);
+    final int? counter = prefs.getInt('counter');
+    print(counter);
+
   }
 }
