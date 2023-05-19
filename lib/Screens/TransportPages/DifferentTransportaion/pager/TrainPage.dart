@@ -1,13 +1,21 @@
+import 'dart:convert';
+
+import 'package:alibaba_clone/models/TicketsModel.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../GlobalVariables.dart';
 import '../../../../Strings.dart';
 import '../../../../constants.dart';
+import '../../../ui_helper/BusTicketCard.dart';
 import '../utils/OriginsDestinations.dart';
+import 'package:http/http.dart';
 
 class TrainPage extends StatefulWidget {
-  const TrainPage({Key? key}) : super(key: key);
+  const TrainPage({Key? key, required this.prefs}) : super(key: key);
+  final SharedPreferences prefs;
 
   @override
   State<TrainPage> createState() => _TrainPageState();
@@ -18,6 +26,15 @@ class _TrainPageState extends State<TrainPage> {
   var destination = "";
   String? travelDate = "";
   bool hideChoosingOriginAndDestination = false;
+  bool showProgressBar = false;
+  late Gregorian dateGregorian;
+  late Jalali dateJalali;
+  List<TicketModel> tickets = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,116 +59,137 @@ class _TrainPageState extends State<TrainPage> {
               )),
           centerTitle: true,
         ),
-        body: Column(
+        body: Stack(
           children: [
-            !hideChoosingOriginAndDestination
-                ? Column(children: [
-                    Image.asset("assets/images/train.jpg", height: 120, fit: BoxFit.fill),
-                    Container(
-                      margin: const EdgeInsets.all(15.0),
-                      padding: const EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  showOriginDestinationAlert('destination');
-                                },
-                                child: Text(destination == "" ? Strings.destination : destination,
-                                    style: const TextStyle(
-                                      fontFamily: 'font',
-                                    ))),
-                            IconButton(
+            Column(
+              children: [
+                !hideChoosingOriginAndDestination
+                    ? Column(children: [
+                        Image.asset("assets/images/train.jpg", height: 120, fit: BoxFit.fill),
+                        Container(
+                          margin: const EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(3.0),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                    onPressed: () {
+                                      showOriginDestinationAlert('destination');
+                                    },
+                                    child:
+                                        Text(destination == "" ? Strings.destination : destination,
+                                            style: const TextStyle(
+                                              fontFamily: 'font',
+                                            ))),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        var temp = origin;
+                                        origin = destination;
+                                        destination = temp;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.change_circle_outlined, size: 27)),
+                                TextButton(
+                                    onPressed: () {
+                                      showOriginDestinationAlert('origin');
+                                    },
+                                    child: Text(origin == "" ? Strings.origin : origin,
+                                        style: TextStyle(
+                                          fontFamily: 'font',
+                                        ))),
+                              ]),
+                        ),
+                        Row(children: [
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: ElevatedButton(
                                 onPressed: () {
                                   setState(() {
-                                    var temp = origin;
-                                    origin = destination;
-                                    destination = temp;
+                                    hideChoosingOriginAndDestination = true;
+                                    getTickets();
                                   });
                                 },
-                                icon: const Icon(Icons.change_circle_outlined, size: 27)),
-                            TextButton(
-                                onPressed: () {
-                                  showOriginDestinationAlert('origin');
-                                },
-                                child: Text(origin == "" ? Strings.origin : origin,
+                                child: Text(Strings.search,
                                     style: TextStyle(
                                       fontFamily: 'font',
                                     ))),
-                          ]),
-                    ),
-                    Row(children: [
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text(Strings.search,
-                                style: TextStyle(
-                                  fontFamily: 'font',
-                                ))),
-                      )),
-                      TextButton(
-                          onPressed: () {
-                            showNumberOfTravelersDialog();
-                          },
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Text(
-                                numberOfTravelers
-                                    ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
-                                    : "تعداد مسافر",
-                                style: TextStyle(
-                                  fontFamily: 'font',
-                                )),
                           )),
-                      TextButton(
-                          onPressed: () async {
-                            if (origin == "" || destination == "") {
-                              Fluttertoast.showToast(
-                                msg: 'مبدا و مقصد را به درستی پر کنید',
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.SNACKBAR,
-                                backgroundColor: Colors.blueGrey,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                            } else {
-                              Jalali? picked = await showPersianDatePicker(
-                                context: context,
-                                initialDate: Jalali.now(),
-                                firstDate: Jalali(1402, 2),
-                                lastDate: Jalali(1402, 3),
-                              );
-                              setState(() {
-                                try {
-                                  travelDate = "${picked!.day} ${monthList[picked.month - 1]}";
-                                  hideChoosingOriginAndDestination = true;
-                                } catch (e) {}
-                              });
-                            }
+                          TextButton(
+                              onPressed: () {
+                                showNumberOfTravelersDialog();
+                              },
+                              child: Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text(
+                                    numberOfTravelers
+                                        ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
+                                        : "تعداد مسافر",
+                                    style: const TextStyle(
+                                      fontFamily: 'font',
+                                    )),
+                              )),
+                          TextButton(
+                              onPressed: () async {
+                                if (origin == "" || destination == "") {
+                                  Fluttertoast.showToast(
+                                    msg: 'مبدا و مقصد را به درستی پر کنید',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.SNACKBAR,
+                                    backgroundColor: Colors.blueGrey,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                } else {
+                                  Jalali? picked = await showPersianDatePicker(
+                                    context: context,
+                                    initialDate: Jalali.now(),
+                                    firstDate: Jalali(1402, 2),
+                                    lastDate: Jalali(1402, 3),
+                                  );
+                                  setState(() {
+                                    try {
+                                      travelDate = "${picked!.day} ${monthList[picked.month - 1]}";
+                                      dateJalali = picked;
+                                      // print(travelDate);
+                                      Jalali g1 = Jalali(picked.year, picked.month, picked.day);
+                                      dateGregorian = g1.toGregorian();
+                                    } catch (e) {}
+                                  });
+                                }
+                              },
+                              child: Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: Text(
+                                      travelDate == "" ? Strings.ticketDate : travelDate.toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'font',
+                                      )))),
+                        ]),
+                      ])
+                    : Container(),
+                !showProgressBar
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: tickets.length,
+                          itemBuilder: (context, i) {
+                            return BusTicketCard(
+                                ticket: tickets[i], dateJalali: dateJalali, prefs: widget.prefs);
+                            // return Container();
                           },
-                          child: Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: Text(
-                                  travelDate == "" ? Strings.ticketDate : travelDate.toString(),
-                                  style: TextStyle(
-                                    fontFamily: 'font',
-                                  )))),
-                    ]),
-                  ])
-                : Container(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, i) {
-                  // return BusTicketCard(ticket: );
-                  return Container();
-                },
-              ),
-            )
+                        ),
+                      )
+                    : Container()
+              ],
+            ),
+            showProgressBar
+                ? Center(
+                    child: SizedBox(
+                        width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
+                : Container()
           ],
         ));
   }
@@ -410,6 +448,48 @@ class _TrainPageState extends State<TrainPage> {
     } else {
       return --number;
     }
+  }
+
+  getTickets() async {
+    setState(() {
+      showProgressBar = true;
+    });
+    //2023-05-19
+    //2023-05-20
+
+    final uri = Uri.parse("${GlobalVariables.BASE_URL_TICKETS}/api/travels?"
+        "source=$origin&destination=$destination&"
+        "gte=${dateGregorian.year}-${dateGregorian.month}-${dateGregorian.day}&"
+        "lt=${dateGregorian.year}-${dateGregorian.month}-${dateGregorian.day + 1}");
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'cookie': widget.prefs.getString('token')!
+    };
+
+    // Map<String, dynamic> body = {"username": username, "password": password, "otp": otp};
+    // String jsonBody = json.encode(body);
+    // final encoding = Encoding.getByName('utf-8');
+
+    Response response = await get(
+      uri,
+      headers: headers,
+      // body: jsonBody,
+      // encoding: encoding,
+    );
+
+    // print(uri);
+    // print(response.body);
+    // print(response.statusCode);
+    // print()
+
+    if (response.statusCode < 400) {
+      // print(response.body);
+      tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson(i)).toList();
+      setState(() {
+        showProgressBar = false;
+      });
+    } else {}
   }
 
   void toast(String message) {

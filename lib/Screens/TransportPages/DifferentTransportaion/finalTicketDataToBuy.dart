@@ -401,7 +401,9 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
       // tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson(i)).toList();
       setState(() {
         if (useWallet) {
-          widget.prefs.setInt('wallet', boughtTickets.length * widget.ticket.basePrice!);
+          int? current = widget.prefs.getInt('wallet');
+          widget.prefs
+              .setInt('wallet', current! - (boughtTickets.length * widget.ticket.basePrice!));
         } else {
           toast('موجودی کافی ندارید');
         }

@@ -96,7 +96,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(defaultPadding),
-                      child: Icon(Icons.person),
+                      child: Icon(Icons.phone),
                     ),
                   ),
                 ),
@@ -271,12 +271,18 @@ class _SignUpFormState extends State<SignUpForm> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(title,style: const TextStyle(
-        fontFamily: 'font',
-      ))]),
-      content: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(message,style: const TextStyle(
-        fontFamily: 'font',
-      ))]),
+      title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        Text(title,
+            style: const TextStyle(
+              fontFamily: 'font',
+            ))
+      ]),
+      content: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        Text(message,
+            style: const TextStyle(
+              fontFamily: 'font',
+            ))
+      ]),
       actions: [okButton],
     );
 
@@ -306,6 +312,7 @@ class _SignUpFormState extends State<SignUpForm> {
     );
 
     final Map parsed = json.decode(response.body);
+    print(parsed);
 
     if (response.statusCode < 400) {
       return true;
@@ -403,9 +410,13 @@ class _SignUpFormState extends State<SignUpForm> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Text("رمز دو مرحله ای که پیامک شده را وارد نمایید",style: const TextStyle(
-                      fontFamily: 'font',
-                    )),
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: const Text("رمز یکبار مصرف ارسال شده را وارد نمایید",
+                          style: const TextStyle(
+                            fontFamily: 'font',
+                          )),
+                    ),
                     const SizedBox(height: 10),
                     OTPTextField(
                         length: 6,
@@ -423,11 +434,12 @@ class _SignUpFormState extends State<SignUpForm> {
                           });
                         }),
                     SizedBox(height: 15),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Text(formatTime(_counter),style: const TextStyle(
-                          fontFamily: 'font',
-                        ))]), //new column child
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Text(formatTime(_counter),
+                          style: const TextStyle(
+                            fontFamily: 'font',
+                          ))
+                    ]), //new column child
                   ],
                 ),
               );

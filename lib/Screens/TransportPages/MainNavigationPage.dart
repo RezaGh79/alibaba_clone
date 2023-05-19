@@ -40,7 +40,7 @@ class _MainNavigatorPageState extends State<MainNavigatorPage> with SingleTicker
         controller: pageController,
         children: [
           BusPage(prefs: widget.prefs),
-          TrainPage(),
+          TrainPage(prefs: widget.prefs),
           DomesticFlightPage(),
           InternationalFlightPage(),
         ],

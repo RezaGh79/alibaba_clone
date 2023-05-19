@@ -118,15 +118,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginRequest() async {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return MainNavigatorPage(prefs: prefs);
-        },
-      ),
-    );
-    return;
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return MainNavigatorPage(prefs: prefs);
+    //     },
+    //   ),
+    // );
+    // return;
     setState(() {
       sendingReq = true;
     });
@@ -146,22 +146,23 @@ class _LoginFormState extends State<LoginForm> {
     // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainNavigatorPage()));
 
     final uri = Uri.parse("${GlobalVariables.BASE_URL}/api/login");
-    // final headers = {'Content-Type': 'application/json', 'cookie': GlobalVariables.cookie};
+    final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {'username': username, 'password': password};
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 
     Response response = await post(
       uri,
-      // headers: headers,
+      headers: headers,
       body: jsonBody,
       encoding: encoding,
     );
-
-    if (response.statusCode == 401) {
+    // print(response.body);
+    // print(response.statusCode);
+    if (response.statusCode != 201) {
       _showAlert(context);
     } else {
-      print(response.body);
+      // print(response.body);
       final Map parsed = json.decode(response.body);
       // print(parsed);
       prefs.setString('token', parsed['access_token']);
