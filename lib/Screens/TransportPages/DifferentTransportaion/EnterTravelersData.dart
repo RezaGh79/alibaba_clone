@@ -51,7 +51,8 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-                            Text("کد ملی مسافران را وارد نمایید", style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text("کد ملی مسافران را وارد نمایید",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(width: 10),
                             Icon(Icons.people)
                           ]),
@@ -88,9 +89,11 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                 ),
               ),
               SizedBox(height: 10),
-              ElevatedButton(onPressed: () {
-                submitUserData();
-              }, child: Text("تایید مشخصات")),
+              ElevatedButton(
+                  onPressed: () {
+                    submitUserData();
+                  },
+                  child: Text("تایید مشخصات")),
             ]),
           ),
         ));
@@ -236,7 +239,6 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
   }
 
   void submitUserData() {
-    Navigator.push(context,MaterialPageRoute(builder: (context) =>FinalTicketToBuy()));
-
+    Navigator.push(context, MaterialPageRoute(builder: (context) => FinalTicketToBuy()));
   }
 }

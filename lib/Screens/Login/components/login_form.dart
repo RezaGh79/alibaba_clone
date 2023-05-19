@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:alibaba_clone/HttpRequests/requests.dart';
-import 'package:alibaba_clone/Screens/TransportPages/MainNavigationPage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../GlobalVariables.dart';
 import '../../../Strings.dart';
 import '../../../constants.dart';
-import '../../Signup/components/signup_form.dart';
-import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart';
+
+import '../../TransportPages/MainNavigationPage.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm({Key? key}) : super(key: key);
@@ -19,79 +19,104 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  late SharedPreferences prefs;
+
   // final BuildContext context;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool sendingReq = false;
+
+  @override
+  void initState() {
+    initSharedPref();
+    super.initState();
+  }
+
+  Future<void> initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Column(
-        children: [
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextFormField(
-              controller: usernameController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              cursorColor: kPrimaryColor,
-              onSaved: (email) {},
-              decoration: const InputDecoration(
-                hintText: Strings.username,
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.person),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextFormField(
-                controller: passwordController,
-                textInputAction: TextInputAction.done,
-                obscureText: true,
-                cursorColor: kPrimaryColor,
-                decoration: const InputDecoration(
-                  hintText: Strings.password,
-                  prefixIcon: Padding(
-                    padding: EdgeInsets.all(defaultPadding),
-                    child: Icon(Icons.lock),
+    return Stack(
+      children: [
+        Form(
+          child: Column(
+            children: [
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  controller: usernameController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  cursorColor: kPrimaryColor,
+                  onSaved: (email) {},
+                  decoration: const InputDecoration(
+                    hintText: Strings.username,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Icon(Icons.person),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          Hero(
-            tag: "login_btn",
-            child: ElevatedButton(
-              onPressed: () {
-                loginRequest();
-              },
-              child: Text(
-                Strings.loginButton.toUpperCase(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextFormField(
+                    controller: passwordController,
+                    textInputAction: TextInputAction.done,
+                    obscureText: true,
+                    cursorColor: kPrimaryColor,
+                    decoration: const InputDecoration(
+                      hintText: Strings.password,
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.all(defaultPadding),
+                        child: Icon(Icons.lock),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(height: defaultPadding),
+              Hero(
+                tag: "login_btn",
+                child: ElevatedButton(
+                  onPressed: () {
+                    loginRequest();
+                  },
+                  child: Text(
+                    Strings.loginButton.toUpperCase(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: defaultPadding),
+            ],
           ),
-          const SizedBox(height: defaultPadding),
-        ],
-      ),
+        ),
+        sendingReq
+            ? Center(
+                child: SizedBox(
+                    width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
+            : Container()
+      ],
     );
   }
 
   Future<void> loginRequest() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return MainNavigatorPage();
-        },
-      ),
-    );
-    return;
+    setState(() {
+      sendingReq = true;
+    });
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return MainNavigatorPage();
+    //     },
+    //   ),
+    // );
+    // return;
 
     var username = usernameController.text;
     var password = passwordController.text;
@@ -111,22 +136,69 @@ class _LoginFormState extends State<LoginForm> {
       encoding: encoding,
     );
 
-    // print(response.body);
-    // print(response.statusCode);
-
-    if (response.statusCode < 400) {
-      // print(response.body);
-      Navigator.push(
+    if (response.statusCode == 401) {
+      _showAlert(context);
+    } else {
+      print(response.body);
+      final Map parsed = json.decode(response.body);
+      // print(parsed);
+      prefs.setString('token', parsed['access_token']);
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return MainNavigatorPage();
+            return const MainNavigatorPage();
           },
         ),
       );
-      // var recentMessages = (json.decode(response.body) as List).map((i) => SignUpMessageModel.fromJson(i)).toList();
-    } else {
-      // throw Exception('Failed to load album');
     }
+    setState(() {
+      sendingReq = false;
+    });
+    // if (response.statusCode < 400) {
+    //   // print(response.body);
+    //   // Navigator.push(
+    //   //   context,
+    //   //   MaterialPageRoute(
+    //   //     builder: (context) {
+    //   //       return MainNavigatorPage();
+    //   //     },
+    //   //   ),
+    //   // );
+    //   // var recentMessages = (json.decode(response.body) as List).map((i) => SignUpMessageModel.fromJson(i)).toList();
+    // } else {
+    //   // throw Exception('Failed to load album');
+    // }
   }
+
+  void _showAlert(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: const Text("تایید"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              actions: [cancelButton],
+              title:
+                  Directionality(textDirection: TextDirection.rtl, child: Text("اطلاعات نادرست")),
+              content: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text("نام کاربری یا رمز عبور نادرست است. دوباره امتحان کنید")),
+            ));
+  }
+
+  void toast(String s) {
+    Fluttertoast.showToast(
+      msg: s,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.SNACKBAR,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
 }

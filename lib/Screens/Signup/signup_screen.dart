@@ -9,7 +9,13 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(0.0),
+          child: AppBar(
+            automaticallyImplyLeading: false, // hides leading widget
+          )
+      ),
       body: Padding(
         padding: EdgeInsets.only(top: 30),
         child: SingleChildScrollView(

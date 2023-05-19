@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:alibaba_clone/Screens/TransportPages/MainNavigationPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // import 'package:native_shared_preferences/native_shared_preferences.dart';
 import 'package:otp_text_field/otp_field.dart';
@@ -36,6 +38,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   int _counter = 0;
   late StreamController<int> _events;
+  bool sendingReq = false;
 
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -52,106 +55,118 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Column(
-        children: [
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextFormField(
-              controller: usernameController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              cursorColor: kPrimaryColor,
-              onSaved: (email) {},
-              decoration: const InputDecoration(
-                hintText: Strings.username,
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.person),
+    return Stack(
+      children: [
+        Form(
+          child: Column(
+            children: [
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  controller: usernameController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  cursorColor: kPrimaryColor,
+                  onSaved: (email) {},
+                  decoration: const InputDecoration(
+                    hintText: Strings.username,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Icon(Icons.person),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding / 2),
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextFormField(
-              controller: mobileNumberController,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              cursorColor: kPrimaryColor,
-              onSaved: (email) {},
-              decoration: const InputDecoration(
-                hintText: Strings.mobile,
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.person),
+              const SizedBox(height: defaultPadding / 2),
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  controller: mobileNumberController,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  cursorColor: kPrimaryColor,
+                  onSaved: (email) {},
+                  decoration: const InputDecoration(
+                    hintText: Strings.mobile,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Icon(Icons.person),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding / 2),
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextFormField(
-              controller: passwordController,
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
-                hintText: Strings.password,
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+              const SizedBox(height: defaultPadding / 2),
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  controller: passwordController,
+                  textInputAction: TextInputAction.next,
+                  obscureText: true,
+                  cursorColor: kPrimaryColor,
+                  decoration: const InputDecoration(
+                    hintText: Strings.password,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Icon(Icons.lock),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding / 2),
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextFormField(
-              obscureText: true,
-              controller: doublePasswordController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              cursorColor: kPrimaryColor,
-              onSaved: (email) {},
-              decoration: const InputDecoration(
-                hintText: Strings.repeatPassword,
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+              const SizedBox(height: defaultPadding / 2),
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  obscureText: true,
+                  controller: doublePasswordController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.done,
+                  cursorColor: kPrimaryColor,
+                  onSaved: (email) {},
+                  decoration: const InputDecoration(
+                    hintText: Strings.repeatPassword,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Icon(Icons.lock),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding / 2),
+              const SizedBox(height: defaultPadding / 2),
 
-          const SizedBox(height: defaultPadding / 2),
-          ElevatedButton(
-            onPressed: () {
-              signUpDataValid(usernameController.text, mobileNumberController.text,
-                  passwordController.text, doublePasswordController.text);
+              const SizedBox(height: defaultPadding / 2),
+              ElevatedButton(
+                onPressed: () {
+                  signUpDataValid(usernameController.text, mobileNumberController.text,
+                      passwordController.text, doublePasswordController.text);
 
-              // showOtpAlert(context);
-              // if (otpText == "") {
-              //   signUpDataValid(usernameController.text, mobileNumberController.text, passwordController.text,
-              //       doublePasswordController.text);
-              // } else {
-              //   // validateSignUp();
-              // }
-            },
-            child: Text(buttonText == "" ? Strings.registerButton.toUpperCase() : buttonText),
+                  // showOtpAlert(context);
+                  // if (otpText == "") {
+                  //   signUpDataValid(usernameController.text, mobileNumberController.text, passwordController.text,
+                  //       doublePasswordController.text);
+                  // } else {
+                  //   // validateSignUp();
+                  // }
+                },
+                child: Text(buttonText == "" ? Strings.registerButton.toUpperCase() : buttonText),
+              ),
+              // const SizedBox(height: defaultPadding),
+              // ElevatedButton(
+              //     onPressed: () {
+              //       _incrementCounter();
+              //     },
+              //     child: Text("here"))
+            ],
           ),
-          // const SizedBox(height: defaultPadding),
-          // ElevatedButton(
-          //     onPressed: () {
-          //       _incrementCounter();
-          //     },
-          //     child: Text("here"))
-        ],
-      ),
+        ),
+        // Center(
+        //   child: CircularProgressIndicator(),
+        // )
+        sendingReq
+            ? Center(
+                child: SizedBox(
+                    width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
+            : Container()
+      ],
     );
   }
 
@@ -218,6 +233,9 @@ class _SignUpFormState extends State<SignUpForm> {
       showAlertDialog(context, "اطلاعات نادرست", "رمز عبور و تکرار رمز عبور با هم برابر نیست");
     } else {
       if (await signUp(username, mobile, password)) {
+        setState(() {
+          sendingReq = false;
+        });
         _startTimer();
         alertD(context);
       }
@@ -249,6 +267,9 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<bool> signUp(String username, String mobile, String password) async {
+    setState(() {
+      sendingReq = true;
+    });
     final uri = Uri.parse("${GlobalVariables.BASE_URL}/api/register");
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {'username': username, 'password': password, 'phoneNumber': mobile};
@@ -262,10 +283,9 @@ class _SignUpFormState extends State<SignUpForm> {
       encoding: encoding,
     );
 
-    print(response.body);
     final Map parsed = json.decode(response.body);
 
-    if (parsed['status'] != 400) {
+    if (response.statusCode < 400) {
       return true;
       // print(response.body);
       // var recentMessages = SignUpMessageModel.fromJson(json.decode(response.body));
@@ -278,6 +298,9 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   validateSignUp() async {
+    setState(() {
+      sendingReq = true;
+    });
     var username = usernameController.text;
     var password = passwordController.text;
     var otp = otpText;
@@ -294,14 +317,27 @@ class _SignUpFormState extends State<SignUpForm> {
       encoding: encoding,
     );
 
-    print(response.body);
-    final Map parsed = json.decode(response.body);
-
+    // print(response.body);
+    setState(() {
+      sendingReq = false;
+    });
     if (response.statusCode < 400) {
-      // print(response.body);
+      final Map parsed = json.decode(response.body);
+      prefs.setString("token", parsed['access_token']);
+      toast('ثبت نام با موفقیت انجام شد');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const MainNavigatorPage();
+          },
+        ),
+      );
+      return true;
       var recentMessages =
           (json.decode(response.body) as List).map((i) => SignUpMessageModel.fromJson(i)).toList();
     } else {
+      return false;
       // throw Exception('Failed to load album');
     }
   }
@@ -315,7 +351,7 @@ class _SignUpFormState extends State<SignUpForm> {
       //setState(() {
       (_counter > 0) ? _counter-- : _timer.cancel();
       //});
-      print(_counter);
+      // print(_counter);
       _events.add(_counter);
     });
   }
@@ -342,10 +378,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text("رمز دو مرحله ای که پیامک شده را وارد نمایید"),
-                    SizedBox(height: 10),
+                    const Text("رمز دو مرحله ای که پیامک شده را وارد نمایید"),
+                    const SizedBox(height: 10),
                     OTPTextField(
-                        controller: otpController,
                         length: 6,
                         width: MediaQuery.of(context).size.width,
                         textFieldAlignment: MainAxisAlignment.spaceAround,
@@ -386,9 +421,19 @@ class _SignUpFormState extends State<SignUpForm> {
 
   Future<void> initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('counter', 10);
-    final int? counter = prefs.getInt('counter');
-    print(counter);
+    // await prefs.setInt('counter', 10);
+    // final int? counter = prefs.getInt('counter');
+    // print(counter);
+  }
 
+  void toast(String s) {
+    Fluttertoast.showToast(
+      msg: s,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.SNACKBAR,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 }
