@@ -50,6 +50,9 @@ class _LoginFormState extends State<LoginForm> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   cursorColor: kPrimaryColor,
+                  style: TextStyle(
+                    fontFamily: 'font',
+                  ),
                   onSaved: (email) {},
                   decoration: const InputDecoration(
                     hintText: Strings.username,
@@ -68,9 +71,15 @@ class _LoginFormState extends State<LoginForm> {
                     controller: passwordController,
                     textInputAction: TextInputAction.done,
                     obscureText: true,
+                    style: TextStyle(
+                      fontFamily: 'font',
+                    ),
                     cursorColor: kPrimaryColor,
                     decoration: const InputDecoration(
                       hintText: Strings.password,
+                      helperStyle: TextStyle(
+                        fontFamily: 'font',
+                      ),
                       prefixIcon: Padding(
                         padding: EdgeInsets.all(defaultPadding),
                         child: Icon(Icons.lock),
@@ -88,6 +97,9 @@ class _LoginFormState extends State<LoginForm> {
                   },
                   child: Text(
                     Strings.loginButton.toUpperCase(),
+                    style: TextStyle(
+                      fontFamily: 'font',
+                    ),
                   ),
                 ),
               ),
@@ -105,6 +117,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginRequest() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return MainNavigatorPage(prefs: prefs);
+        },
+      ),
+    );
+    return;
     setState(() {
       sendingReq = true;
     });
@@ -124,14 +145,14 @@ class _LoginFormState extends State<LoginForm> {
     // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MainNavigatorPage()));
 
     final uri = Uri.parse("${GlobalVariables.BASE_URL}/api/login");
-    final headers = {'Content-Type': 'application/json', 'cookie': GlobalVariables.cookie};
+    // final headers = {'Content-Type': 'application/json', 'cookie': GlobalVariables.cookie};
     Map<String, dynamic> body = {'username': username, 'password': password};
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 
     Response response = await post(
       uri,
-      headers: headers,
+      // headers: headers,
       body: jsonBody,
       encoding: encoding,
     );
@@ -147,7 +168,7 @@ class _LoginFormState extends State<LoginForm> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return const MainNavigatorPage();
+            return MainNavigatorPage(prefs: prefs);
           },
         ),
       );
@@ -173,7 +194,10 @@ class _LoginFormState extends State<LoginForm> {
 
   void _showAlert(BuildContext context) {
     Widget cancelButton = TextButton(
-      child: const Text("تایید"),
+      child: const Text("تایید",
+          style: TextStyle(
+            fontFamily: 'font',
+          )),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -182,11 +206,18 @@ class _LoginFormState extends State<LoginForm> {
         context: context,
         builder: (context) => AlertDialog(
               actions: [cancelButton],
-              title:
-                  Directionality(textDirection: TextDirection.rtl, child: Text("اطلاعات نادرست")),
+              title: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text("اطلاعات نادرست",
+                      style: TextStyle(
+                        fontFamily: 'font',
+                      ))),
               content: Directionality(
                   textDirection: TextDirection.rtl,
-                  child: Text("نام کاربری یا رمز عبور نادرست است. دوباره امتحان کنید")),
+                  child: Text("نام کاربری یا رمز عبور نادرست است. دوباره امتحان کنید",
+                      style: TextStyle(
+                        fontFamily: 'font',
+                      ))),
             ));
   }
 
@@ -200,5 +231,4 @@ class _LoginFormState extends State<LoginForm> {
       fontSize: 16.0,
     );
   }
-
 }

@@ -67,6 +67,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   cursorColor: kPrimaryColor,
+                  style: TextStyle(
+                    fontFamily: 'font',
+                  ),
                   onSaved: (email) {},
                   decoration: const InputDecoration(
                     hintText: Strings.username,
@@ -88,6 +91,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   onSaved: (email) {},
                   decoration: const InputDecoration(
                     hintText: Strings.mobile,
+                    suffixStyle: TextStyle(
+                      fontFamily: 'font',
+                    ),
                     prefixIcon: Padding(
                       padding: EdgeInsets.all(defaultPadding),
                       child: Icon(Icons.person),
@@ -100,6 +106,9 @@ class _SignUpFormState extends State<SignUpForm> {
                 textDirection: TextDirection.rtl,
                 child: TextFormField(
                   controller: passwordController,
+                  style: TextStyle(
+                    fontFamily: 'font',
+                  ),
                   textInputAction: TextInputAction.next,
                   obscureText: true,
                   cursorColor: kPrimaryColor,
@@ -121,6 +130,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.done,
                   cursorColor: kPrimaryColor,
+                  style: TextStyle(
+                    fontFamily: 'font',
+                  ),
                   onSaved: (email) {},
                   decoration: const InputDecoration(
                     hintText: Strings.repeatPassword,
@@ -147,7 +159,10 @@ class _SignUpFormState extends State<SignUpForm> {
                   //   // validateSignUp();
                   // }
                 },
-                child: Text(buttonText == "" ? Strings.registerButton.toUpperCase() : buttonText),
+                child: Text(buttonText == "" ? Strings.registerButton.toUpperCase() : buttonText,
+                    style: TextStyle(
+                      fontFamily: 'font',
+                    )),
               ),
               // const SizedBox(height: defaultPadding),
               // ElevatedButton(
@@ -245,7 +260,10 @@ class _SignUpFormState extends State<SignUpForm> {
   showAlertDialog(BuildContext context, String title, String message) {
     // set up the button
     Widget okButton = TextButton(
-      child: const Text("OK"),
+      child: const Text("OK",
+          style: TextStyle(
+            fontFamily: 'font',
+          )),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -253,8 +271,12 @@ class _SignUpFormState extends State<SignUpForm> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(title)]),
-      content: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(message)]),
+      title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(title,style: const TextStyle(
+        fontFamily: 'font',
+      ))]),
+      content: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(message,style: const TextStyle(
+        fontFamily: 'font',
+      ))]),
       actions: [okButton],
     );
 
@@ -329,7 +351,7 @@ class _SignUpFormState extends State<SignUpForm> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return const MainNavigatorPage();
+            return MainNavigatorPage(prefs: prefs);
           },
         ),
       );
@@ -358,7 +380,10 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void alertD(BuildContext ctx) {
     Widget okButton = TextButton(
-      child: const Text("تایید"),
+      child: const Text("تایید",
+          style: TextStyle(
+            fontFamily: 'font',
+          )),
       onPressed: () {
         Navigator.of(context).pop();
         validateSignUp();
@@ -378,7 +403,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Text("رمز دو مرحله ای که پیامک شده را وارد نمایید"),
+                    const Text("رمز دو مرحله ای که پیامک شده را وارد نمایید",style: const TextStyle(
+                      fontFamily: 'font',
+                    )),
                     const SizedBox(height: 10),
                     OTPTextField(
                         length: 6,
@@ -398,7 +425,9 @@ class _SignUpFormState extends State<SignUpForm> {
                     SizedBox(height: 15),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Text(formatTime(_counter))]), //new column child
+                        children: [Text(formatTime(_counter),style: const TextStyle(
+                          fontFamily: 'font',
+                        ))]), //new column child
                   ],
                 ),
               );

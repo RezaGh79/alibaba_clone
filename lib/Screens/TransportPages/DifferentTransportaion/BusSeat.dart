@@ -1,9 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BusSeat extends StatefulWidget {
   const BusSeat(
-      {Key? key, required this.reserved, required this.men, required this.number, required this.userChooseTicket})
+      {Key? key,
+      required this.reserved,
+      required this.men,
+      required this.number,
+      required this.userChooseTicket})
       : super(key: key);
   final bool reserved;
   final bool men;
@@ -23,10 +29,13 @@ class _BusSeatState extends State<BusSeat> {
         color: getSeatColor(),
         elevation: 2,
         shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.grey, width: 1, style: BorderStyle.solid),
+            side: const BorderSide(color: Colors.grey, width: 1, style: BorderStyle.solid),
             borderRadius: BorderRadius.circular(7)),
         child: InkWell(
           onTap: () {
+            if (widget.reserved) {
+              return;
+            }
             widget.userChooseTicket(!userTapSeat, widget.number);
             setState(() {
               userTapSeat = !userTapSeat;
@@ -38,10 +47,22 @@ class _BusSeatState extends State<BusSeat> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text(getSeatText())],
+              children: [
+                Text(getSeatText(), style: TextStyle(color: getTextColor(), fontFamily: 'font'))
+              ],
             ),
           ),
         ));
+  }
+
+  getTextColor() {
+    if (widget.reserved) {
+      return Colors.white;
+    } else if (userTapSeat) {
+      return Colors.white;
+    } else {
+      return Colors.black;
+    }
   }
 
   getSeatColor() {
@@ -55,8 +76,10 @@ class _BusSeatState extends State<BusSeat> {
   }
 
   String getSeatText() {
+    Random random = Random();
+    int randomNumber = random.nextInt(10);
     if (widget.reserved) {
-      if (widget.men) {
+      if (randomNumber > 5) {
         return "آقا";
       } else {
         return "خانم";

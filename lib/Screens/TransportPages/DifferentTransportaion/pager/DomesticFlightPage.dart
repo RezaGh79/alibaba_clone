@@ -37,17 +37,20 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                 {Navigator.of(context).pop()}
             },
           ),
-          title: Text(travelDate == ""
-              ? "بلیت هواپیمای داخلی"
-              : "$origin به $destination در ${travelDate!}"),
+          title: Text(
+              travelDate == ""
+                  ? "بلیت هواپیمای داخلی"
+                  : "$origin به $destination در ${travelDate!}",
+              style: TextStyle(
+                fontFamily: 'font',
+              )),
           centerTitle: true,
         ),
         body: Column(
           children: [
             !hideChoosingOriginAndDestination
                 ? Column(children: [
-                    Image.asset("assets/images/domestic_flight.jpg",
-                        height: 120, fit: BoxFit.fill),
+                    Image.asset("assets/images/domestic_flight.jpg", height: 120, fit: BoxFit.fill),
                     Container(
                       margin: const EdgeInsets.all(15.0),
                       padding: const EdgeInsets.all(3.0),
@@ -60,7 +63,10 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                                 onPressed: () {
                                   showOriginDestinationAlert('origin');
                                 },
-                                child: Text(origin == "" ? Strings.origin : origin)),
+                                child: Text(origin == "" ? Strings.origin : origin,
+                                    style: TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
                             IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -74,21 +80,33 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                                 onPressed: () {
                                   showOriginDestinationAlert('destination');
                                 },
-                                child: Text(destination == "" ? Strings.destination : destination)),
+                                child: Text(destination == "" ? Strings.destination : destination,
+                                    style: TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
                           ]),
                     ),
                     Row(children: [
                       Expanded(
-                          child: ElevatedButton(onPressed: () {}, child: Text(Strings.search))),
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(Strings.search,
+                                  style: TextStyle(
+                                    fontFamily: 'font',
+                                  )))),
                       TextButton(
                           onPressed: () {
                             showNumberOfTravelersDialog();
                           },
                           child: Directionality(
                             textDirection: TextDirection.rtl,
-                            child: Text(numberOfTravelers
-                                ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
-                                : "تعداد مسافر"),
+                            child: Text(
+                                numberOfTravelers
+                                    ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
+                                    : "تعداد مسافر",
+                                style: TextStyle(
+                                  fontFamily: 'font',
+                                )),
                           )),
                       TextButton(
                           onPressed: () async {
@@ -119,7 +137,10 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                           child: Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(
-                                  travelDate == "" ? Strings.ticketDate : travelDate.toString()))),
+                                  travelDate == "" ? Strings.ticketDate : travelDate.toString(),
+                                  style: TextStyle(
+                                    fontFamily: 'font',
+                                  )))),
                     ]),
                   ])
                 : Container(),
@@ -127,7 +148,8 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, i) {
-                  return BusTicketCard();
+                  // return BusTicketCard();
+                  return Container();
                 },
               ),
             )
@@ -140,7 +162,10 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("لیست شهرها"),
+            title: const Text("لیست شهرها",
+                style: TextStyle(
+                  fontFamily: 'font',
+                )),
             content: setupAlertDialogContainer(originOrDestination),
           );
         });
@@ -165,7 +190,9 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                   Navigator.pop(context);
                 },
                 child: ListTile(
-                  title: Text(OriginsDestinations.originsDomestic[index]),
+                  title: Text(OriginsDestinations.originsDomestic[index],style: const TextStyle(
+                    fontFamily: 'font',
+                  )),
                 ));
           },
         ));
@@ -178,7 +205,10 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
 
   void showNumberOfTravelersDialog() {
     Widget okButton = TextButton(
-      child: const Text("تایید"),
+      child: const Text("تایید",
+          style: const TextStyle(
+            fontFamily: 'font',
+          )),
       onPressed: () {
         setState(() {
           numberOfTravelers = true;
@@ -219,7 +249,9 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfAdult.toString()),
+                        Text(numberOfAdult.toString(),style: const TextStyle(
+                          fontFamily: 'font',
+                        )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(

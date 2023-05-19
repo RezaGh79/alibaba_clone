@@ -37,7 +37,10 @@ class _TrainPageState extends State<TrainPage> {
                 {Navigator.of(context).pop()}
             },
           ),
-          title: Text(travelDate == "" ? "بلیت قطار" : "$origin به $destination در ${travelDate!}"),
+          title: Text(travelDate == "" ? "بلیت قطار" : "$origin به $destination در ${travelDate!}",
+              style: TextStyle(
+                fontFamily: 'font',
+              )),
           centerTitle: true,
         ),
         body: Column(
@@ -57,7 +60,10 @@ class _TrainPageState extends State<TrainPage> {
                                 onPressed: () {
                                   showOriginDestinationAlert('origin');
                                 },
-                                child: Text(origin == "" ? Strings.origin : origin)),
+                                child: Text(origin == "" ? Strings.origin : origin,
+                                    style: TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
                             IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -71,21 +77,33 @@ class _TrainPageState extends State<TrainPage> {
                                 onPressed: () {
                                   showOriginDestinationAlert('destination');
                                 },
-                                child: Text(destination == "" ? Strings.destination : destination)),
+                                child: Text(destination == "" ? Strings.destination : destination,
+                                    style: TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
                           ]),
                     ),
                     Row(children: [
                       Expanded(
-                          child: ElevatedButton(onPressed: () {}, child: Text(Strings.search))),
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(Strings.search,
+                                  style: TextStyle(
+                                    fontFamily: 'font',
+                                  )))),
                       TextButton(
                           onPressed: () {
                             showNumberOfTravelersDialog();
                           },
                           child: Directionality(
                             textDirection: TextDirection.rtl,
-                            child: Text(numberOfTravelers
-                                ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
-                                : "تعداد مسافر"),
+                            child: Text(
+                                numberOfTravelers
+                                    ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
+                                    : "تعداد مسافر",
+                                style: TextStyle(
+                                  fontFamily: 'font',
+                                )),
                           )),
                       TextButton(
                           onPressed: () async {
@@ -116,7 +134,10 @@ class _TrainPageState extends State<TrainPage> {
                           child: Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(
-                                  travelDate == "" ? Strings.ticketDate : travelDate.toString()))),
+                                  travelDate == "" ? Strings.ticketDate : travelDate.toString(),
+                                  style: TextStyle(
+                                    fontFamily: 'font',
+                                  )))),
                     ]),
                   ])
                 : Container(),
@@ -124,7 +145,8 @@ class _TrainPageState extends State<TrainPage> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, i) {
-                  return BusTicketCard();
+                  // return BusTicketCard(ticket: );
+                  return Container();
                 },
               ),
             )
@@ -137,7 +159,10 @@ class _TrainPageState extends State<TrainPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("لیست شهرها"),
+            title: const Text("لیست شهرها",
+                style: TextStyle(
+                  fontFamily: 'font',
+                )),
             content: setupAlertDialogContainer(originOrDestination),
           );
         });
@@ -162,7 +187,10 @@ class _TrainPageState extends State<TrainPage> {
                   Navigator.pop(context);
                 },
                 child: ListTile(
-                  title: Text(OriginsDestinations.originsDomestic[index]),
+                  title: Text(OriginsDestinations.originsDomestic[index],
+                      style: TextStyle(
+                        fontFamily: 'font',
+                      )),
                 ));
           },
         ));
@@ -175,7 +203,10 @@ class _TrainPageState extends State<TrainPage> {
 
   void showNumberOfTravelersDialog() {
     Widget okButton = TextButton(
-      child: const Text("تایید"),
+      child: const Text("تایید",
+          style: TextStyle(
+            fontFamily: 'font',
+          )),
       onPressed: () {
         setState(() {
           numberOfTravelers = true;
@@ -216,7 +247,10 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfAdult.toString()),
+                        Text(numberOfAdult.toString(),
+                            style: TextStyle(
+                              fontFamily: 'font',
+                            )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
@@ -237,7 +271,10 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text("بزرگسال")
+                        Text("بزرگسال",
+                            style: TextStyle(
+                              fontFamily: 'font',
+                            ))
                       ]),
                   Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -263,7 +300,9 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfKids.toString()),
+                        Text(numberOfKids.toString(),style: const TextStyle(
+                          fontFamily: 'font',
+                        )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
@@ -284,7 +323,10 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text("کودک    ")
+                        Text("کودک    ",
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            ))
                       ]),
                   Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -310,7 +352,9 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfBabies.toString()),
+                        Text(numberOfBabies.toString(),style: const TextStyle(
+                          fontFamily: 'font',
+                        )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(

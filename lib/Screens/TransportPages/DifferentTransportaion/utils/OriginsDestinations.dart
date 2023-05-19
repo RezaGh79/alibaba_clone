@@ -1,6 +1,7 @@
 class OriginsDestinations {
   static const List<String> originsDomestic = [
     "تهران",
+    "اراک",
     "اصفهان",
     "مشهد",
     "سمنان",
@@ -17,6 +18,7 @@ class OriginsDestinations {
   ];
   static const List<String> destinationsDomestic = [
     "تهران",
+    "اراک",
     "اصفهان",
     "مشهد",
     "سمنان",

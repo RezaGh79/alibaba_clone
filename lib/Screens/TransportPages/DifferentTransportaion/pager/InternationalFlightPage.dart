@@ -37,94 +37,120 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                 {Navigator.of(context).pop()}
             },
           ),
-          title: Text(travelDate == "" ? "بلیت هواپیمای خارجی" : "$origin به $destination در ${travelDate!}"),
+          title: Text(
+              travelDate == ""
+                  ? "بلیت هواپیمای خارجی"
+                  : "$origin به $destination در ${travelDate!}",
+              style: const TextStyle(
+                fontFamily: 'font',
+              )),
           centerTitle: true,
         ),
         body: Column(
           children: [
             !hideChoosingOriginAndDestination
                 ? Column(children: [
-              Image.asset("assets/images/international_flight.jpg", height: 120, fit: BoxFit.fill),
-              Container(
-                margin: const EdgeInsets.all(15.0),
-                padding: const EdgeInsets.all(3.0),
-                decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    Image.asset("assets/images/international_flight.jpg",
+                        height: 120, fit: BoxFit.fill),
+                    Container(
+                      margin: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  showOriginDestinationAlert('origin');
+                                },
+                                child: Text(origin == "" ? Strings.origin : origin,
+                                    style: const TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    var temp = origin;
+                                    origin = destination;
+                                    destination = temp;
+                                  });
+                                },
+                                icon: const Icon(Icons.change_circle_outlined)),
+                            TextButton(
+                                onPressed: () {
+                                  showOriginDestinationAlert('destination');
+                                },
+                                child: Text(destination == "" ? Strings.destination : destination,
+                                    style: const TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
+                          ]),
+                    ),
+                    Row(children: [
+                      Expanded(
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(Strings.search,
+                                  style: const TextStyle(
+                                    fontFamily: 'font',
+                                  )))),
                       TextButton(
                           onPressed: () {
-                            showOriginDestinationAlert('origin');
+                            showNumberOfTravelersDialog();
                           },
-                          child: Text(origin == "" ? Strings.origin : origin)),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              var temp = origin;
-                              origin = destination;
-                              destination = temp;
-                            });
-                          },
-                          icon: const Icon(Icons.change_circle_outlined)),
+                          child: Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Text(
+                                numberOfTravelers
+                                    ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
+                                    : "تعداد مسافر",
+                                style: const TextStyle(
+                                  fontFamily: 'font',
+                                )),
+                          )),
                       TextButton(
-                          onPressed: () {
-                            showOriginDestinationAlert('destination');
+                          onPressed: () async {
+                            if (origin == "" || destination == "") {
+                              Fluttertoast.showToast(
+                                msg: 'مبدا و مقصد را به درستی پر کنید',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.SNACKBAR,
+                                backgroundColor: Colors.blueGrey,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                            } else {
+                              Jalali? picked = await showPersianDatePicker(
+                                context: context,
+                                initialDate: Jalali.now(),
+                                firstDate: Jalali(1402, 2),
+                                lastDate: Jalali(1402, 3),
+                              );
+                              setState(() {
+                                try {
+                                  travelDate = "${picked!.day} ${monthList[picked.month - 1]}";
+                                  hideChoosingOriginAndDestination = true;
+                                } catch (e) {}
+                              });
+                            }
                           },
-                          child: Text(destination == "" ? Strings.destination : destination)),
+                          child: Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(
+                                  travelDate == "" ? Strings.ticketDate : travelDate.toString(),
+                                  style: const TextStyle(
+                                    fontFamily: 'font',
+                                  )))),
                     ]),
-              ),
-              Row(children: [
-                Expanded(
-                    child: ElevatedButton(onPressed: () {}, child: Text(Strings.search))),
-                TextButton(
-                    onPressed: () {
-                      showNumberOfTravelersDialog();
-                    },
-                    child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: Text(numberOfTravelers
-                          ? "${numberOfKids + numberOfBabies + numberOfAdult} مسافر"
-                          : "تعداد مسافر"),
-                    )),
-                TextButton(
-                    onPressed: () async {
-                      if (origin == "" || destination == "") {
-                        Fluttertoast.showToast(
-                          msg: 'مبدا و مقصد را به درستی پر کنید',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.SNACKBAR,
-                          backgroundColor: Colors.blueGrey,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      } else {
-                        Jalali? picked = await showPersianDatePicker(
-                          context: context,
-                          initialDate: Jalali.now(),
-                          firstDate: Jalali(1402, 2),
-                          lastDate: Jalali(1402, 3),
-                        );
-                        setState(() {
-                          try {
-                            travelDate = "${picked!.day} ${monthList[picked.month - 1]}";
-                            hideChoosingOriginAndDestination = true;
-                          } catch (e) {}
-                        });
-                      }
-                    },
-                    child: Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: Text(
-                            travelDate == "" ? Strings.ticketDate : travelDate.toString()))),
-              ]),
-            ])
+                  ])
                 : Container(),
             Expanded(
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, i) {
-                  return BusTicketCard();
+                  // return BusTicketCard();
+                  return Container();
                 },
               ),
             )
@@ -137,11 +163,15 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("لیست شهرها"),
+            title: const Text("لیست شهرها",
+                style: const TextStyle(
+                  fontFamily: 'font',
+                )),
             content: setupAlertDialogContainer(originOrDestination),
           );
         });
   }
+
   Widget setupAlertDialogContainer(String originOrDestination) {
     return SizedBox(
         height: 300.0,
@@ -161,7 +191,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                   Navigator.pop(context);
                 },
                 child: ListTile(
-                  title: Text(OriginsDestinations.originsDomestic[index]),
+                  title: Text(OriginsDestinations.originsDomestic[index],
+                      style: const TextStyle(
+                        fontFamily: 'font',
+                      )),
                 ));
           },
         ));
@@ -174,7 +207,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
 
   void showNumberOfTravelersDialog() {
     Widget okButton = TextButton(
-      child: const Text("تایید"),
+      child: const Text("تایید",
+          style: const TextStyle(
+            fontFamily: 'font',
+          )),
       onPressed: () {
         setState(() {
           numberOfTravelers = true;
@@ -215,7 +251,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfAdult.toString()),
+                        Text(numberOfAdult.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
@@ -236,7 +275,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                             ),
                           ),
                         ),
-                        Text("بزرگسال")
+                        Text("بزرگسال",
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            ))
                       ]),
                   Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -262,7 +304,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfKids.toString()),
+                        Text(numberOfKids.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
@@ -283,7 +328,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                             ),
                           ),
                         ),
-                        Text("کودک    ")
+                        Text("کودک    ",
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            ))
                       ]),
                   Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -309,7 +357,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfBabies.toString()),
+                        Text(numberOfBabies.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
@@ -330,7 +381,10 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                             ),
                           ),
                         ),
-                        Text("نوزاد    ")
+                        Text("نوزاد    ",
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            ))
                       ]),
                 ]));
           },
@@ -367,6 +421,4 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
       fontSize: 16.0,
     );
   }
-
 }
-

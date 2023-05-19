@@ -1,15 +1,30 @@
 import 'package:alibaba_clone/Screens/TransportPages/DifferentTransportaion/finalTicketDataToBuy.dart';
+import 'package:alibaba_clone/models/TicketsModel.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:persian_fonts/persian_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Strings.dart';
 import '../../../constants.dart';
 
 class EnterTravelersData extends StatefulWidget {
-  const EnterTravelersData({Key? key, required this.travelersCount}) : super(key: key);
+  const EnterTravelersData(
+      {Key? key,
+      required this.travelersCount,
+      required this.ticket,
+      required this.boughtSeats,
+      required this.dateJalali,
+      required this.prefs})
+      : super(key: key);
+
   final int travelersCount;
+  final TicketModel ticket;
+  final List<int> boughtSeats;
+  final Jalali dateJalali;
+  final SharedPreferences prefs;
 
   @override
   State<EnterTravelersData> createState() => _EnterTravelersDataState();
@@ -20,6 +35,9 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
   String? selectedValue;
 
   List<TextEditingController> textControllerList = [];
+  TextEditingController nameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController numberController = TextEditingController();
 
   @override
   void initState() {
@@ -34,7 +52,9 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("مشخصات مسافرین"),
+          title: Text("مشخصات مسافرین",style: const TextStyle(
+            fontFamily: 'font',
+          )),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -52,7 +72,7 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
                             Text("کد ملی مسافران را وارد نمایید",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font'),),
                             SizedBox(width: 10),
                             Icon(Icons.people)
                           ]),
@@ -74,14 +94,16 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-                          Text("مشخصات سرپرست", style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text("مشخصات سرپرست", style: TextStyle(fontWeight: FontWeight.bold , fontFamily: 'font')),
                           SizedBox(width: 10),
                           Icon(Icons.people)
                         ]),
                       ),
-                      textFormFieldGenerator('نام', TextInputType.text),
-                      textFormFieldGenerator('نام خانوادگی', TextInputType.text),
-                      textFormFieldGenerator('شماره موبایل', TextInputType.number),
+                      textFormFieldGenerator('نام', TextInputType.text, nameController),
+                      textFormFieldGenerator(
+                          'نام خانوادگی', TextInputType.text, lastNameController),
+                      textFormFieldGenerator(
+                          'شماره موبایل', TextInputType.number, numberController),
                       SizedBox(height: 5),
                       genderDropDown(),
                     ],
@@ -93,7 +115,10 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                   onPressed: () {
                     submitUserData();
                   },
-                  child: Text("تایید مشخصات")),
+                  child: Text("تایید مشخصات",
+                      style: const TextStyle(
+                        fontFamily: 'font',
+                      ))),
             ]),
           ),
         ));
@@ -105,8 +130,11 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
+          style: TextStyle(
+            fontFamily: 'font',
+          ),
           controller: textControllerList[index - 1],
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.datetime,
           textInputAction: TextInputAction.next,
           decoration: const InputDecoration(
             border: OutlineInputBorder(
@@ -212,13 +240,14 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
     );
   }
 
-  textFormFieldGenerator(String hint, TextInputType inputType) {
+  textFormFieldGenerator(
+      String hint, TextInputType inputType, TextEditingController textEditingController) {
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
-          // controller: textControllerList[index - 1],
+          controller: textEditingController,
           keyboardType: inputType,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
@@ -239,6 +268,23 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
   }
 
   void submitUserData() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => FinalTicketToBuy()));
+    List<String> nationalCodes = [];
+    for (var controller in textControllerList) {
+      nationalCodes.add(controller.text);
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FinalTicketToBuy(
+                  ticket: widget.ticket,
+                  nationalCodes: nationalCodes,
+                  superVisorName: nameController.text,
+                  superVisorLastName: lastNameController.text,
+                  superVisorMobile: numberController.text,
+                  menOrWomen: selectedValue.toString(),
+                  boughtSeats: widget.boughtSeats,
+                  dateJalali: widget.dateJalali,
+                  prefs: widget.prefs,
+                )));
   }
 }

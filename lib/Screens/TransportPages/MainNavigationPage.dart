@@ -1,6 +1,7 @@
 import 'package:alibaba_clone/Screens/TransportPages/DifferentTransportaion/pager/BusPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Strings.dart';
 import '../ui_helper/BottomNav.dart';
@@ -9,7 +10,8 @@ import 'DifferentTransportaion/pager/InternationalFlightPage.dart';
 import 'DifferentTransportaion/pager/TrainPage.dart';
 
 class MainNavigatorPage extends StatefulWidget {
-  const MainNavigatorPage({Key? key}) : super(key: key);
+  MainNavigatorPage({Key? key, required this.prefs}) : super(key: key);
+  final SharedPreferences prefs;
 
   @override
   State<MainNavigatorPage> createState() => _MainNavigatorPageState();
@@ -28,30 +30,6 @@ class _MainNavigatorPageState extends State<MainNavigatorPage> with SingleTicker
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   brightness: Brightness.dark,
-      //   title: const Text(Strings.appname),
-      //   actions: [
-      //     IconButton(
-      //         onPressed: () {
-      //           setState(() {
-      //             // searchClicked = true;
-      //           });
-      //         },
-      //         icon: Icon(Icons.search)),
-      //     PopupMenuButton<String>(onSelected: (value) {
-      //       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //       //   content: Text(value),
-      //       // ));
-      //       // handleActionsClick(value);
-      //     }, itemBuilder: (BuildContext context) {
-      //       return [
-      //         PopupMenuItem(child: Text("New Group"), value: "new group"),
-      //         PopupMenuItem(child: Text("Settings"), value: "Settings"),
-      //       ];
-      //     })
-      //   ],
-      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: Icon(Icons.history),
@@ -60,8 +38,8 @@ class _MainNavigatorPageState extends State<MainNavigatorPage> with SingleTicker
       bottomNavigationBar: BottomNav(controller: pageController),
       body: PageView(
         controller: pageController,
-        children: const [
-          BusPage(),
+        children: [
+          BusPage(prefs: widget.prefs),
           TrainPage(),
           DomesticFlightPage(),
           InternationalFlightPage(),

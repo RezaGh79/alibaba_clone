@@ -37,7 +37,7 @@ class MobileSignupScreen extends StatelessWidget {
       children: <Widget>[
         const SignUpScreenTopImage(),
         Row(
-          children: [
+          children: const [
             Spacer(),
             Expanded(
               flex: 8,

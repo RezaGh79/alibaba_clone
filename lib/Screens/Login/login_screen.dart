@@ -14,9 +14,15 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height / 6;
     return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(0.0),
+          child: AppBar(
+            automaticallyImplyLeading: false, // hides leading widget
+          )
+      ),
       body: Padding(
         padding: EdgeInsets.only(top: height),
-        child: SingleChildScrollView(
+        child: const SingleChildScrollView(
           child: MobileLoginScreen(),
         ),
       ),
