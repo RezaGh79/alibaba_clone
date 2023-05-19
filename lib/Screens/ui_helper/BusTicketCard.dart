@@ -16,7 +16,7 @@ class BusTicketCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 15, left: 15, top: 10),
+      padding: const EdgeInsets.only(right: 13, left: 13, top: 10),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(7),
@@ -37,43 +37,42 @@ class BusTicketCard extends StatelessWidget {
               children: <Widget>[
                 Row(children: const [
                   SizedBox(width: 20),
-                  Text("VIP",style: TextStyle(
-                    fontFamily: 'font',
-                  )),
+                  Text("VIP",
+                      style: TextStyle(
+                        fontFamily: 'font',
+                      )),
                   Spacer(),
                   Text("پیک صبا",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font')),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 15)),
                   SizedBox(width: 10)
                 ]),
-                SizedBox(height: 10),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    // use whichever suits your need
-                    children: [
-                      Text(ticket.destination.toString(),
-                          style: const TextStyle(
-                            fontFamily: 'font',
-                          )),
-                      Container(
-                        width: 80,
-                        height: 1,
-                        color: Colors.grey,
-                      ),
-                      Text(ticket.source.toString(),
-                          style: const TextStyle(
-                            fontFamily: 'font',
-                          )),
-                      Text(
-                        "23:45",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font'),
-                      )
-                    ]),
+                const SizedBox(height: 10),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  Text(ticket.destination.toString(),
+                      style: const TextStyle(
+                        fontFamily: 'font',
+                      )),
+                  Container(
+                    width: 80,
+                    height: 1,
+                    color: Colors.grey,
+                  ),
+                  Text(ticket.source.toString(),
+                      style: const TextStyle(
+                        fontFamily: 'font',
+                      )),
+                  Text(
+                    convertUtcToLocal().toString(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font'),
+                  )
+                ]),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.end, // use whichever suits your need
                     children: [
                       TextButton(
                           onPressed: () {},
-                          child: Text("قوانین جریمه و استرداد",
+                          child: const Text("قوانین جریمه و استرداد",
                               style: TextStyle(
                                 fontFamily: 'font',
                               ))),
@@ -91,7 +90,7 @@ class BusTicketCard extends StatelessWidget {
                   height: 0.5,
                   color: Colors.grey,
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
@@ -107,7 +106,7 @@ class BusTicketCard extends StatelessWidget {
                         Directionality(
                           textDirection: TextDirection.rtl,
                           child: Text(
-                              "${ticket.basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ریال",
+                              "${ticket.basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} تومان",
                               style: const TextStyle(
                                 fontFamily: 'font',
                               )),
@@ -120,5 +119,9 @@ class BusTicketCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String convertUtcToLocal() {
+    return (ticket.date.toString().split("T")[1]).substring(0, 5);
   }
 }

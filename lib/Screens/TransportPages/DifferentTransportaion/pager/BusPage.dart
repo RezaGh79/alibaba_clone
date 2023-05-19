@@ -92,7 +92,7 @@ class _BusPageState extends State<BusPage> {
                                       destination = temp;
                                     });
                                   },
-                                  icon: const Icon(Icons.change_circle_outlined)),
+                                  icon: const Icon(Icons.change_circle_outlined, size: 27)),
                               TextButton(
                                   onPressed: () {
                                     showOriginDestinationAlert('origin');
@@ -105,19 +105,22 @@ class _BusPageState extends State<BusPage> {
                       ),
                       Row(children: [
                         Expanded(
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    hideChoosingOriginAndDestination = true;
-                                    getTickets();
-                                  });
-                                },
-                                child: Text(
-                                  Strings.search,
-                                  style: TextStyle(
-                                    fontFamily: 'font',
-                                  ),
-                                ))),
+                            child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  hideChoosingOriginAndDestination = true;
+                                  getTickets();
+                                });
+                              },
+                              child: const Text(
+                                Strings.search,
+                                style: TextStyle(
+                                  fontFamily: 'font',
+                                ),
+                              )),
+                        )),
                         TextButton(
                             onPressed: () async {
                               if (origin == "" || destination == "") {
@@ -145,7 +148,7 @@ class _BusPageState extends State<BusPage> {
                                 textDirection: TextDirection.rtl,
                                 child: Text(
                                     travelDate == "" ? Strings.ticketDate : travelDate.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: 'font',
                                     )))),
                       ]),

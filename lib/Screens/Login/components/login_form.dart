@@ -34,6 +34,7 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
+    setWalletBudget();
   }
 
   @override
@@ -230,5 +231,9 @@ class _LoginFormState extends State<LoginForm> {
       textColor: Colors.white,
       fontSize: 16.0,
     );
+  }
+
+  void setWalletBudget() {
+    prefs.setInt('wallet', 500000);
   }
 }

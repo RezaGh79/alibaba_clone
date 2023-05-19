@@ -75,7 +75,7 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                                     destination = temp;
                                   });
                                 },
-                                icon: const Icon(Icons.change_circle_outlined)),
+                                icon: const Icon(Icons.change_circle_outlined,size: 27)),
                             TextButton(
                                 onPressed: () {
                                   showOriginDestinationAlert('destination');
@@ -88,12 +88,15 @@ class _DomesticFlightPageState extends State<DomesticFlightPage> {
                     ),
                     Row(children: [
                       Expanded(
-                          child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text(Strings.search,
-                                  style: TextStyle(
-                                    fontFamily: 'font',
-                                  )))),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(Strings.search,
+                                    style: TextStyle(
+                                      fontFamily: 'font',
+                                    ))),
+                          )),
                       TextButton(
                           onPressed: () {
                             showNumberOfTravelersDialog();

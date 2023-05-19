@@ -4,7 +4,6 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import '../../../../Strings.dart';
 import '../../../../constants.dart';
-import '../../../ui_helper/BusTicketCard.dart';
 import '../utils/OriginsDestinations.dart';
 
 class TrainPage extends StatefulWidget {
@@ -38,7 +37,7 @@ class _TrainPageState extends State<TrainPage> {
             },
           ),
           title: Text(travelDate == "" ? "بلیت قطار" : "$origin به $destination در ${travelDate!}",
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'font',
               )),
           centerTitle: true,
@@ -58,10 +57,10 @@ class _TrainPageState extends State<TrainPage> {
                           children: [
                             TextButton(
                                 onPressed: () {
-                                  showOriginDestinationAlert('origin');
+                                  showOriginDestinationAlert('destination');
                                 },
-                                child: Text(origin == "" ? Strings.origin : origin,
-                                    style: TextStyle(
+                                child: Text(destination == "" ? Strings.destination : destination,
+                                    style: const TextStyle(
                                       fontFamily: 'font',
                                     ))),
                             IconButton(
@@ -72,12 +71,12 @@ class _TrainPageState extends State<TrainPage> {
                                     destination = temp;
                                   });
                                 },
-                                icon: const Icon(Icons.change_circle_outlined)),
+                                icon: const Icon(Icons.change_circle_outlined, size: 27)),
                             TextButton(
                                 onPressed: () {
-                                  showOriginDestinationAlert('destination');
+                                  showOriginDestinationAlert('origin');
                                 },
-                                child: Text(destination == "" ? Strings.destination : destination,
+                                child: Text(origin == "" ? Strings.origin : origin,
                                     style: TextStyle(
                                       fontFamily: 'font',
                                     ))),
@@ -85,12 +84,15 @@ class _TrainPageState extends State<TrainPage> {
                     ),
                     Row(children: [
                       Expanded(
-                          child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text(Strings.search,
-                                  style: TextStyle(
-                                    fontFamily: 'font',
-                                  )))),
+                          child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text(Strings.search,
+                                style: TextStyle(
+                                  fontFamily: 'font',
+                                ))),
+                      )),
                       TextButton(
                           onPressed: () {
                             showNumberOfTravelersDialog();
@@ -159,10 +161,13 @@ class _TrainPageState extends State<TrainPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("لیست شهرها",
-                style: TextStyle(
-                  fontFamily: 'font',
-                )),
+            title: const Directionality(
+              textDirection: TextDirection.rtl,
+              child: Text("لیست شهرها",
+                  style: TextStyle(
+                    fontFamily: 'font',
+                  )),
+            ),
             content: setupAlertDialogContainer(originOrDestination),
           );
         });
@@ -187,10 +192,13 @@ class _TrainPageState extends State<TrainPage> {
                   Navigator.pop(context);
                 },
                 child: ListTile(
-                  title: Text(OriginsDestinations.originsDomestic[index],
-                      style: TextStyle(
-                        fontFamily: 'font',
-                      )),
+                  title: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Text(OriginsDestinations.originsDomestic[index],
+                        style: TextStyle(
+                          fontFamily: 'font',
+                        )),
+                  ),
                 ));
           },
         ));
@@ -300,9 +308,10 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfKids.toString(),style: const TextStyle(
-                          fontFamily: 'font',
-                        )),
+                        Text(numberOfKids.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
@@ -352,9 +361,10 @@ class _TrainPageState extends State<TrainPage> {
                             ),
                           ),
                         ),
-                        Text(numberOfBabies.toString(),style: const TextStyle(
-                          fontFamily: 'font',
-                        )),
+                        Text(numberOfBabies.toString(),
+                            style: const TextStyle(
+                              fontFamily: 'font',
+                            )),
                         Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(

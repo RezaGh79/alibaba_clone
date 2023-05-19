@@ -52,9 +52,10 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("مشخصات مسافرین",style: const TextStyle(
-            fontFamily: 'font',
-          )),
+          title: Text("مشخصات مسافرین",
+              style: const TextStyle(
+                fontFamily: 'font',
+              )),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -71,8 +72,11 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-                            Text("کد ملی مسافران را وارد نمایید",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font'),),
+                            Text(
+                              "کد ملی مسافران را وارد نمایید",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16),
+                            ),
                             SizedBox(width: 10),
                             Icon(Icons.people)
                           ]),
@@ -94,7 +98,9 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-                          Text("مشخصات سرپرست", style: TextStyle(fontWeight: FontWeight.bold , fontFamily: 'font')),
+                          Text("مشخصات سرپرست",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
                           SizedBox(width: 10),
                           Icon(Icons.people)
                         ]),
@@ -119,6 +125,7 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
                       style: const TextStyle(
                         fontFamily: 'font',
                       ))),
+              SizedBox(height: 10)
             ]),
           ),
         ));
@@ -162,14 +169,17 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
           hint: Row(
             children: const [
               Expanded(
-                child: Text(
-                  'جنسیت',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text(
+                    'جنسیت',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'font'),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -177,14 +187,17 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
           items: items
               .map((item) => DropdownMenuItem<String>(
                     value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    child: Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Text(
+                        item,
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'font'),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ))
               .toList(),
@@ -247,6 +260,7 @@ class _EnterTravelersDataState extends State<EnterTravelersData> {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
+          style: TextStyle(fontFamily: 'font'),
           controller: textEditingController,
           keyboardType: inputType,
           textInputAction: TextInputAction.next,

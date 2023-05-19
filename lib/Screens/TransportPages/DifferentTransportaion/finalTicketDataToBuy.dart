@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:alibaba_clone/models/TicketsModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,12 +44,22 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("اطلاعات نهایی بلیت",style: const TextStyle(
-          fontFamily: 'font',
-        ))),
-        body: SingleChildScrollView(
-            child: Column(
-                children: [ticketData(), supervisorData(), disCount(), finalConfirmation()])));
+        appBar: AppBar(
+            title: Text("اطلاعات نهایی بلیت",
+                style: const TextStyle(
+                  fontFamily: 'font',
+                ))),
+        body: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: SingleChildScrollView(
+              child: Column(children: [
+            ticketData(),
+            supervisorData(),
+            disCount(),
+            wallet(),
+            finalConfirmation(),
+          ])),
+        ));
   }
 
   ticketData() {
@@ -59,7 +70,8 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("اطلاعات بلیت", style: TextStyle(fontWeight: FontWeight.bold , fontFamily: 'font')),
+            Text("اطلاعات بلیت",
+                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.people)
           ]),
@@ -96,17 +108,23 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
     return TableRow(children: [
       Padding(
         padding: EdgeInsets.all(5.0),
-        child: Column(children: [Text(s1,style: const TextStyle(
-          fontFamily: 'font',
-        ))]),
+        child: Column(children: [
+          Text(s1,
+              style: const TextStyle(
+                fontFamily: 'font',
+              ))
+        ]),
       ),
       Container(
         color: Colors.grey[300],
         child: Padding(
           padding: EdgeInsets.all(5.0),
-          child: Column(children: [Text(s2, style: const TextStyle(
-            fontFamily: 'font',
-          ))]),
+          child: Column(children: [
+            Text(s2,
+                style: const TextStyle(
+                  fontFamily: 'font',
+                ))
+          ]),
         ),
       ),
     ]);
@@ -119,7 +137,8 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("مشخصات سرپرست", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font')),
+            Text("مشخصات سرپرست",
+                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.people)
           ]),
@@ -140,17 +159,23 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
     TableRow(children: [
       Padding(
         padding: EdgeInsets.all(5.0),
-        child: Column(children: [Text("s1",style: const TextStyle(
-          fontFamily: 'font',
-        ))]),
+        child: Column(children: [
+          Text("s1",
+              style: const TextStyle(
+                fontFamily: 'font',
+              ))
+        ]),
       ),
       Container(
         color: Colors.grey[300],
         child: Padding(
           padding: EdgeInsets.all(5.0),
-          child: Column(children: [Text("s2",style: const TextStyle(
-            fontFamily: 'font',
-          ))]),
+          child: Column(children: [
+            Text("s2",
+                style: const TextStyle(
+                  fontFamily: 'font',
+                ))
+          ]),
         ),
       ),
     ]);
@@ -163,7 +188,8 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("کد تخفیف", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font')),
+            Text("کد تخفیف",
+                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.discount)
           ]),
@@ -180,9 +206,10 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                             ),
                           ),
                           onPressed: () {},
-                          child: Text("اعمال کد",style: const TextStyle(
-                            fontFamily: 'font',
-                          ))))),
+                          child: Text("اعمال کد",
+                              style: const TextStyle(
+                                fontFamily: 'font',
+                              ))))),
               const SizedBox(width: 20),
               Expanded(
                 child: SizedBox(
@@ -196,7 +223,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                       cursorColor: kPrimaryColor,
                       decoration: InputDecoration(
                         hintText: 'کد تخفیف',
-                        hintStyle: TextStyle(fontSize: 16),
+                        hintStyle: TextStyle(fontFamily: 'font'),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
@@ -217,14 +244,82 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
     );
   }
 
+  bool _value = true;
+  bool isWinnerTakesAll = true;
+  bool useWallet = true;
+
+  wallet() {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: EdgeInsets.all(15),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Column(
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        useWallet = !useWallet;
+                      });
+                    },
+                    child: Container(
+                      height: 28,
+                      width: 28,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: useWallet ? Colors.blue : Colors.white,
+                          border: Border.all(width: 2, color: Colors.blue)),
+                      child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: useWallet
+                              ? Icon(
+                                  Icons.check,
+                                  size: 18.0,
+                                  color: Colors.white,
+                                )
+                              : Container()),
+                    ),
+                  ),
+                  Row(children: [
+                    Text("استفاده از کیف پول",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
+                    SizedBox(width: 10),
+                    Icon(Icons.wallet),
+                  ]),
+                ]),
+                Padding(
+                  padding: const EdgeInsets.only(right: 24),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Text("${widget.prefs.getInt('wallet')} ",
+                        style: const TextStyle(fontSize: 13, fontFamily: 'font')),
+                    Text(":موجودی",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 13)),
+                    SizedBox(width: 10),
+                  ]),
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: 10),
+        ]),
+      ),
+    );
+  }
+
   finalConfirmation() {
     return Card(
       elevation: 3,
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("تایید نهایی", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font')),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
+            Text("تایید نهایی",
+                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.payment)
           ]),
@@ -237,23 +332,30 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8), // <-- Radius
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           onPressed: () {
                             orderTicket();
                           },
-                          child: Text("پرداخت" , style: const TextStyle(
-                            fontFamily: 'font',
-                          ))))),
+                          child: Text("پرداخت",
+                              style: const TextStyle(
+                                fontFamily: 'font',
+                              ))))),
               const SizedBox(width: 20),
               Expanded(
-                  child: Text("مبلغ قابل پرداخت     " +
-                      "${widget.nationalCodes.length * widget.ticket.basePrice!} ریال",style: const TextStyle(
-                    fontFamily: 'font',
-                  ))),
+                  child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Text(
+                    "مبلغ قابل پرداخت     " +
+                        "${widget.nationalCodes.length * widget.ticket.basePrice!} ریال",
+                    style: const TextStyle(
+                      fontFamily: 'font',
+                    )),
+              )),
             ],
-          )
+          ),
+          const SizedBox(height: 10)
         ]),
       ),
     );
@@ -272,13 +374,10 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
   }
 
   Future<void> orderTicket() async {
-    //2023-05-19
-    //2023-05-20
-
-    final uri = Uri.parse("${GlobalVariables.BASE_URL_TICKETS}/api/travels?");
+    final uri = Uri.parse("${GlobalVariables.BASE_URL_TICKETS}/api/tickets/orderticket");
     Map<String, String> boughtTickets = getTicketsMap();
     Map<String, dynamic> body = {
-      'travelId': "15",
+      'travelId': widget.ticket.id,
       'token': widget.prefs.getString('token'),
       "seat_reserved": boughtTickets
     };
@@ -294,10 +393,19 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
       encoding: encoding,
     );
 
-    if (response.statusCode < 400) {
+    print(response.body);
+    if (response.statusCode == 200) {
+      toast('بلیت شما با موفقیت رزرو شد');
+
       // print(response.body);
       // tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson(i)).toList();
-      setState(() {});
+      setState(() {
+        if (useWallet) {
+          widget.prefs.setInt('wallet', boughtTickets.length * widget.ticket.basePrice!);
+        } else {
+          toast('موجودی کافی ندارید');
+        }
+      });
     } else {}
   }
 
@@ -308,5 +416,16 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
           widget.boughtSeats[i].toString(), () => widget.nationalCodes[i].toString());
     }
     return boughtTickets;
+  }
+
+  void toast(String s) {
+    Fluttertoast.showToast(
+      msg: s,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.SNACKBAR,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 }
