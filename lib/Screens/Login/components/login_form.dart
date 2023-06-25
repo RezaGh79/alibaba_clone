@@ -118,15 +118,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginRequest() async {
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       return MainNavigatorPage(prefs: prefs);
-    //     },
-    //   ),
-    // );
-    // return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return MainNavigatorPage(prefs: prefs);
+        },
+      ),
+    );
+    return;
     setState(() {
       sendingReq = true;
     });

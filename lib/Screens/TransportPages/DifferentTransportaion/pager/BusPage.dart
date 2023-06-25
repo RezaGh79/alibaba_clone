@@ -38,6 +38,9 @@ class _BusPageState extends State<BusPage> {
     super.initState();
   }
 
+  int defaultChoiceIndex = 0;
+  final List<String> _choicesList = ['قیمت', 'زودترین', 'پیش فرض'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,12 +149,59 @@ class _BusPageState extends State<BusPage> {
                             },
                             child: Directionality(
                                 textDirection: TextDirection.rtl,
-                                child: Text(
-                                    travelDate == "" ? Strings.ticketDate : travelDate.toString(),
+                                child: Text(travelDate == "" ? Strings.ticketDate : travelDate.toString(),
                                     style: const TextStyle(
                                       fontFamily: 'font',
                                     )))),
                       ]),
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 17, right: 10),
+                              child: SizedBox(
+                                  height: 40,
+                                  width: 70,
+                                  child: ElevatedButton(
+                                      onPressed: () {},
+                                      child: const Text("فیلتر", style: TextStyle(fontFamily: 'font')))),
+                            ),
+                            Column(
+                              children: <Widget>[
+                                const SizedBox(height: 16),
+                                Wrap(
+                                  spacing: 3,
+                                  children: List.generate(_choicesList.length, (index) {
+                                    return ChoiceChip(
+                                      labelPadding: const EdgeInsets.all(2.0),
+                                      label: Text(
+                                        _choicesList[index],
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2!
+                                            .copyWith(color: Colors.white, fontSize: 14),
+                                      ),
+                                      selected: defaultChoiceIndex == index,
+                                      selectedColor: const Color.fromRGBO(34, 48, 80, 1),
+                                      onSelected: (value) {
+                                        setState(() {
+                                          defaultChoiceIndex = value ? index : defaultChoiceIndex;
+                                        });
+                                      },
+                                      // backgroundColor: color,
+                                      elevation: 1,
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    );
+                                  }),
+                                )
+                              ],
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text("   مرتب سازی", style: TextStyle(fontFamily: 'font')),
+                            ),
+                          ]),
                     ])
                   : Container(),
               !showProgressBar && tickets.isNotEmpty
@@ -159,8 +209,7 @@ class _BusPageState extends State<BusPage> {
                       child: ListView.builder(
                         itemCount: tickets.length,
                         itemBuilder: (context, i) {
-                          return BusTicketCard(
-                              ticket: tickets[i], dateJalali: dateJalali, prefs: widget.prefs);
+                          return BusTicketCard(ticket: tickets[i], dateJalali: dateJalali, prefs: widget.prefs);
                         },
                       ),
                     )
@@ -168,9 +217,7 @@ class _BusPageState extends State<BusPage> {
             ],
           ),
           showProgressBar
-              ? Center(
-                  child: SizedBox(
-                      width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
+              ? const Center(child: SizedBox(width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
               : Container()
         ],
       ),
@@ -207,6 +254,58 @@ class _BusPageState extends State<BusPage> {
         ));
   }
 
+  int _lowerValue = 18;
+  int _upperValue = 69;
+
+  Widget show123() {
+    return SizedBox(
+        height: 300.0,
+        width: 300.0,
+        child: Column(children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Lower value: $_lowerValue"),
+                Text("Upper value: $_upperValue"),
+                Container(
+                  height: 80,
+                  width: 300,
+                  child: RangeSlider(
+                    min: 18,
+                    max: 69,
+                    divisions: 51,
+                    values: RangeValues(_lowerValue.toDouble(), _upperValue.toDouble()),
+                    onChanged: (RangeValues values) {
+                      setState(() {
+                        _lowerValue = values.start.round();
+                        _upperValue = values.end.round();
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]));
+  }
+
+  showAlertFilter() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Directionality(
+                textDirection: TextDirection.rtl,
+                child: const Text("لیست شهرها",
+                    style: TextStyle(
+                      fontFamily: 'font',
+                    ))),
+            content: show123(),
+          );
+        });
+  }
+
   void showOriginDestinationAlert(String originOrDestination) {
     showDialog(
         context: context,
@@ -235,10 +334,7 @@ class _BusPageState extends State<BusPage> {
         "gte=${dateGregorian.year}-${dateGregorian.month}-${dateGregorian.day}&"
         "lt=${dateGregorian.year}-${dateGregorian.month}-${dateGregorian.day + 1}");
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'cookie': widget.prefs.getString('token')!
-    };
+    final headers = {'Content-Type': 'application/json', 'cookie': widget.prefs.getString('token')!};
 
     // Map<String, dynamic> body = {"username": username, "password": password, "otp": otp};
     // String jsonBody = json.encode(body);
