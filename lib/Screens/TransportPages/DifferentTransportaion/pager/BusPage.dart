@@ -32,6 +32,7 @@ class _BusPageState extends State<BusPage> {
   late Jalali dateJalali;
   List<TicketModel> tickets = [];
   bool showProgressBar = false;
+  RangeValues _currentRangeValues = const RangeValues(0, 100);
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _BusPageState extends State<BusPage> {
 
   int defaultChoiceIndex = 0;
   final List<String> _choicesList = ['قیمت', 'زودترین', 'پیش فرض'];
+  bool checkedValue = false;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +166,77 @@ class _BusPageState extends State<BusPage> {
                                   height: 40,
                                   width: 70,
                                   child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return AlertDialog(
+                                                  title: const Directionality(
+                                                      textDirection: TextDirection.rtl,
+                                                      child: Text("فیلتر مورد نظر را انتخاب کنید",
+                                                          style: TextStyle(fontFamily: 'font'))),
+                                                  content: Directionality(
+                                                    textDirection: TextDirection.rtl,
+                                                    child: SizedBox(
+                                                      height: 105,
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              RangeSlider(
+                                                                values: _currentRangeValues,
+                                                                min: 0,
+                                                                max: 100,
+                                                                divisions: (_currentRangeValues.end -
+                                                                        _currentRangeValues.start)
+                                                                    .toInt(),
+                                                                labels: RangeLabels(
+                                                                  _currentRangeValues.start.round().toString(),
+                                                                  _currentRangeValues.end.round().toString(),
+                                                                ),
+                                                                onChanged: (RangeValues values) {
+                                                                  setState(() {
+                                                                    _currentRangeValues = values;
+                                                                  });
+                                                                },
+                                                              )
+                                                            ],
+                                                          ),
+                                                          CheckboxListTile(
+                                                            title: Text("فقط نمایش تخفیف دارها"),
+                                                            value: checkedValue,
+                                                            onChanged: (newValue) {
+                                                              setState(() {
+                                                                checkedValue = newValue!;
+                                                              });
+                                                            },
+                                                            controlAffinity: ListTileControlAffinity
+                                                                .leading, //  <-- leading Checkbox
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () => Navigator.pop(context),
+                                                      child: const Text(
+                                                        "تایید",
+                                                        style: TextStyle(fontWeight: FontWeight.bold , fontSize: 15 , fontFamily: 'font'),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
                                       child: const Text("فیلتر", style: TextStyle(fontFamily: 'font')))),
                             ),
                             Column(
@@ -266,9 +338,9 @@ class _BusPageState extends State<BusPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Lower value: $_lowerValue"),
-                Text("Upper value: $_upperValue"),
-                Container(
+                // Text("Lower value: $_lowerValue"),
+                // Text("Upper value: $_upperValue"),
+                SizedBox(
                   height: 80,
                   width: 300,
                   child: RangeSlider(

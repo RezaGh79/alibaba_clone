@@ -1,3 +1,4 @@
+import 'package:alibaba_clone/HistoryTicketPage.dart';
 import 'package:alibaba_clone/Screens/TransportPages/DifferentTransportaion/pager/BusPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,10 @@ class _MainNavigatorPageState extends State<MainNavigatorPage> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.history),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HistoryTicketPage()));
+        },
+        child: const Icon(Icons.history),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNav(controller: pageController),
