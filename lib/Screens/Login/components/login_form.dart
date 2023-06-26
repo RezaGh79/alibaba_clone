@@ -109,7 +109,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ),
         sendingReq
-            ? Center(
+            ? const Center(
                 child: SizedBox(
                     width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
             : Container()
@@ -118,15 +118,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginRequest() async {
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       return MainNavigatorPage(prefs: prefs);
-    //     },
-    //   ),
-    // );
-    // return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return MainNavigatorPage(prefs: prefs);
+        },
+      ),
+    );
+    return;
     setState(() {
       sendingReq = true;
     });
@@ -166,6 +166,7 @@ class _LoginFormState extends State<LoginForm> {
       final Map parsed = json.decode(response.body);
       // print(parsed);
       prefs.setString('token', parsed['access_token']);
+      GlobalVariables.token = parsed['access_token'];
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

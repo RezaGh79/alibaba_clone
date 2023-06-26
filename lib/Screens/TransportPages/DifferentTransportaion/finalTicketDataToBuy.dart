@@ -41,6 +41,14 @@ class FinalTicketToBuy extends StatefulWidget {
 }
 
 class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
+  double priceWithoutDiscount = 0.0;
+
+  @override
+  void initState() {
+    priceWithoutDiscount = (widget.ticket.basePrice!).toDouble();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +78,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("اطلاعات بلیت",
-                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
+            Text("اطلاعات بلیت", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.people)
           ]),
@@ -79,8 +86,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
           tableData(<String, String>{
             "مبدا": ticket.source.toString(),
             "مقصد": ticket.destination.toString(),
-            "تاریخ و ساعت حرکت":
-                "${widget.dateJalali.day} ${monthList[widget.dateJalali.month - 1]}",
+            "تاریخ و ساعت حرکت": "${widget.dateJalali.day} ${monthList[widget.dateJalali.month - 1]}",
             'شرکت مسافربری': "پیک صبا",
             'نوع اتوبوس': 'VIP',
             'تعداد صندلی': widget.nationalCodes.length.toString(),
@@ -137,8 +143,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("مشخصات سرپرست",
-                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
+            Text("مشخصات سرپرست", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.people)
           ]),
@@ -187,9 +192,8 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Text("کد تخفیف",
-                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
+            Text("کد تخفیف", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.discount)
           ]),
@@ -205,7 +209,9 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                               borderRadius: BorderRadius.circular(8), // <-- Radius
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            discountDone();
+                          },
                           child: Text("اعمال کد",
                               style: const TextStyle(
                                 fontFamily: 'font',
@@ -285,8 +291,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                   ),
                   Row(children: [
                     Text("استفاده از کیف پول",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
                     SizedBox(width: 10),
                     Icon(Icons.wallet),
                   ]),
@@ -294,11 +299,8 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                 Padding(
                   padding: const EdgeInsets.only(right: 24),
                   child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text("${widget.prefs.getInt('wallet')} ",
-                        style: const TextStyle(fontSize: 13, fontFamily: 'font')),
-                    Text(":موجودی",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 13)),
+                    Text("${widget.prefs.getInt('wallet')} ", style: const TextStyle(fontSize: 13, fontFamily: 'font')),
+                    Text(":موجودی", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 13)),
                     SizedBox(width: 10),
                   ]),
                 )
@@ -318,8 +320,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
         padding: EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
-            Text("تایید نهایی",
-                style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
+            Text("تایید نهایی", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 16)),
             SizedBox(width: 10),
             Icon(Icons.payment)
           ]),
@@ -346,9 +347,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
               Expanded(
                   child: Directionality(
                 textDirection: TextDirection.rtl,
-                child: Text(
-                    "مبلغ قابل پرداخت     " +
-                        "${widget.nationalCodes.length * widget.ticket.basePrice!} ریال",
+                child: Text("مبلغ قابل پرداخت     " + "${widget.nationalCodes.length * priceWithoutDiscount} ریال",
                     style: const TextStyle(
                       fontFamily: 'font',
                     )),
@@ -402,8 +401,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
       setState(() {
         if (useWallet) {
           int? current = widget.prefs.getInt('wallet');
-          widget.prefs
-              .setInt('wallet', current! - (boughtTickets.length * widget.ticket.basePrice!));
+          widget.prefs.setInt('wallet', current! - (boughtTickets.length * widget.ticket.basePrice!));
         } else {
           toast('موجودی کافی ندارید');
         }
@@ -414,8 +412,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
   Map<String, String> getTicketsMap() {
     Map<String, String> boughtTickets = {};
     for (var i = 0; i < widget.nationalCodes.length; i++) {
-      boughtTickets.putIfAbsent(
-          widget.boughtSeats[i].toString(), () => widget.nationalCodes[i].toString());
+      boughtTickets.putIfAbsent(widget.boughtSeats[i].toString(), () => widget.nationalCodes[i].toString());
     }
     return boughtTickets;
   }
@@ -429,5 +426,12 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
       textColor: Colors.white,
       fontSize: 16.0,
     );
+  }
+
+  void discountDone() {
+    setState(() {
+      priceWithoutDiscount *= 0.8;
+    });
+    toast("کد تحفیف اعمال شد");
   }
 }

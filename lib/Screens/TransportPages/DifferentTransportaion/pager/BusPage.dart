@@ -33,13 +33,14 @@ class _BusPageState extends State<BusPage> {
   List<TicketModel> tickets = [];
   bool showProgressBar = false;
   RangeValues _currentRangeValues = const RangeValues(0, 100);
+  bool showSorted = false;
 
   @override
   void initState() {
     super.initState();
   }
 
-  int defaultChoiceIndex = 0;
+  int defaultChoiceIndex = 2;
   final List<String> _choicesList = ['قیمت', 'زودترین', 'پیش فرض'];
   bool checkedValue = false;
 
@@ -134,8 +135,8 @@ class _BusPageState extends State<BusPage> {
                                 Jalali? picked = await showPersianDatePicker(
                                   context: context,
                                   initialDate: Jalali.now(),
-                                  firstDate: Jalali(1402, 2),
-                                  lastDate: Jalali(1402, 3),
+                                  firstDate: Jalali(1402, 4),
+                                  lastDate: Jalali(1402, 5),
                                 );
                                 // setState(() {
                                 try {
@@ -156,136 +157,146 @@ class _BusPageState extends State<BusPage> {
                                       fontFamily: 'font',
                                     )))),
                       ]),
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 17, right: 10),
-                              child: SizedBox(
-                                  height: 40,
-                                  width: 70,
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return AlertDialog(
-                                                  title: const Directionality(
-                                                      textDirection: TextDirection.rtl,
-                                                      child: Text("فیلتر مورد نظر را انتخاب کنید",
-                                                          style: TextStyle(fontFamily: 'font'))),
-                                                  content: Directionality(
-                                                    textDirection: TextDirection.rtl,
-                                                    child: SizedBox(
-                                                      height: 105,
-                                                      child: Column(
+                    ])
+                  : Container(),
+              // !showProgressBar && tickets.isNotEmpty
+              //     ?
+              Column(
+                children: [
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 17, right: 10),
+                          child: SizedBox(
+                              height: 40,
+                              width: 70,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: const Directionality(
+                                                  textDirection: TextDirection.rtl,
+                                                  child: Text("فیلتر مورد نظر را انتخاب کنید",
+                                                      style: TextStyle(fontFamily: 'font'))),
+                                              content: Directionality(
+                                                textDirection: TextDirection.rtl,
+                                                child: SizedBox(
+                                                  height: 105,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Column(
                                                         mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: <Widget>[
-                                                          Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: <Widget>[
-                                                              RangeSlider(
-                                                                values: _currentRangeValues,
-                                                                min: 0,
-                                                                max: 100,
-                                                                divisions: (_currentRangeValues.end -
-                                                                        _currentRangeValues.start)
+                                                          RangeSlider(
+                                                            values: _currentRangeValues,
+                                                            min: 0,
+                                                            max: 100,
+                                                            divisions:
+                                                                (_currentRangeValues.end - _currentRangeValues.start)
                                                                     .toInt(),
-                                                                labels: RangeLabels(
-                                                                  _currentRangeValues.start.round().toString(),
-                                                                  _currentRangeValues.end.round().toString(),
-                                                                ),
-                                                                onChanged: (RangeValues values) {
-                                                                  setState(() {
-                                                                    _currentRangeValues = values;
-                                                                  });
-                                                                },
-                                                              )
-                                                            ],
-                                                          ),
-                                                          CheckboxListTile(
-                                                            title: Text("فقط نمایش تخفیف دارها"),
-                                                            value: checkedValue,
-                                                            onChanged: (newValue) {
+                                                            labels: RangeLabels(
+                                                              _currentRangeValues.start.round().toString(),
+                                                              _currentRangeValues.end.round().toString(),
+                                                            ),
+                                                            onChanged: (RangeValues values) {
                                                               setState(() {
-                                                                checkedValue = newValue!;
+                                                                _currentRangeValues = values;
                                                               });
                                                             },
-                                                            controlAffinity: ListTileControlAffinity
-                                                                .leading, //  <-- leading Checkbox
                                                           )
                                                         ],
                                                       ),
-                                                    ),
+                                                      CheckboxListTile(
+                                                        title: const Text("فقط نمایش تخفیف دارها"),
+                                                        value: checkedValue,
+                                                        onChanged: (newValue) {
+                                                          setState(() {
+                                                            checkedValue = newValue!;
+                                                          });
+                                                        },
+                                                        controlAffinity: ListTileControlAffinity.leading,
+                                                      )
+                                                    ],
                                                   ),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () => Navigator.pop(context),
-                                                      child: const Text(
-                                                        "تایید",
-                                                        style: TextStyle(fontWeight: FontWeight.bold , fontSize: 15 , fontFamily: 'font'),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
+                                                ),
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () => {Navigator.pop(context), filter()},
+                                                  child: const Text(
+                                                    "تایید",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold, fontSize: 15, fontFamily: 'font'),
+                                                  ),
+                                                ),
+                                              ],
                                             );
                                           },
                                         );
                                       },
-                                      child: const Text("فیلتر", style: TextStyle(fontFamily: 'font')))),
-                            ),
-                            Column(
-                              children: <Widget>[
-                                const SizedBox(height: 16),
-                                Wrap(
-                                  spacing: 3,
-                                  children: List.generate(_choicesList.length, (index) {
-                                    return ChoiceChip(
-                                      labelPadding: const EdgeInsets.all(2.0),
-                                      label: Text(
-                                        _choicesList[index],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2!
-                                            .copyWith(color: Colors.white, fontSize: 14),
-                                      ),
-                                      selected: defaultChoiceIndex == index,
-                                      selectedColor: const Color.fromRGBO(34, 48, 80, 1),
-                                      onSelected: (value) {
-                                        setState(() {
-                                          defaultChoiceIndex = value ? index : defaultChoiceIndex;
-                                        });
-                                      },
-                                      // backgroundColor: color,
-                                      elevation: 1,
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
                                     );
-                                  }),
-                                )
-                              ],
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Text("   مرتب سازی", style: TextStyle(fontFamily: 'font')),
-                            ),
-                          ]),
-                    ])
-                  : Container(),
-              !showProgressBar && tickets.isNotEmpty
-                  ? Expanded(
-                      child: ListView.builder(
-                        itemCount: tickets.length,
-                        itemBuilder: (context, i) {
-                          return BusTicketCard(ticket: tickets[i], dateJalali: dateJalali, prefs: widget.prefs);
-                        },
-                      ),
-                    )
-                  : Container()
+                                  },
+                                  child: const Text("فیلتر", style: TextStyle(fontFamily: 'font')))),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            const SizedBox(height: 16),
+                            Wrap(
+                              spacing: 3,
+                              children: List.generate(_choicesList.length, (index) {
+                                return ChoiceChip(
+                                  labelPadding: const EdgeInsets.all(2.0),
+                                  label: Text(
+                                    _choicesList[index],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2!
+                                        .copyWith(color: Colors.white, fontSize: 14),
+                                  ),
+                                  selected: defaultChoiceIndex == index,
+                                  selectedColor: const Color.fromRGBO(34, 48, 80, 1),
+                                  onSelected: (value) {
+                                    setState(() {
+                                      defaultChoiceIndex = value ? index : defaultChoiceIndex;
+                                      sort(defaultChoiceIndex);
+                                    });
+                                  },
+                                  // backgroundColor: color,
+                                  elevation: 1,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                );
+                              }),
+                            )
+                          ],
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 10),
+                          child: Text("   مرتب سازی", style: TextStyle(fontFamily: 'font')),
+                        ),
+                      ]),
+                  SizedBox(
+                    height: hideChoosingOriginAndDestination ? 590 : 320,
+                    child: ListView.builder(
+                      itemCount: showSorted ? sortedTicket.length : tickets.length,
+                      itemBuilder: (context, i) {
+                        return BusTicketCard(
+                            ticket: showSorted ? sortedTicket[i] : tickets[i],
+                            dateJalali: dateJalali,
+                            prefs: widget.prefs);
+                      },
+                    ),
+                  ),
+                ],
+              )
+              // : Container()
             ],
           ),
           showProgressBar
@@ -326,8 +337,8 @@ class _BusPageState extends State<BusPage> {
         ));
   }
 
-  int _lowerValue = 18;
-  int _upperValue = 69;
+  int _lowerValue = 80;
+  int _upperValue = 150;
 
   Widget show123() {
     return SizedBox(
@@ -367,9 +378,9 @@ class _BusPageState extends State<BusPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Directionality(
+            title: const Directionality(
                 textDirection: TextDirection.rtl,
-                child: const Text("لیست شهرها",
+                child: Text("لیست شهرها",
                     style: TextStyle(
                       fontFamily: 'font',
                     ))),
@@ -437,5 +448,26 @@ class _BusPageState extends State<BusPage> {
       textColor: Colors.white,
       fontSize: 16.0,
     );
+  }
+
+  List<TicketModel> sortedTicket = [];
+
+  filter() {
+    setState(() {
+      tickets.removeWhere((ticket) => ticket.basePrice! < _lowerValue || ticket.basePrice! > _upperValue);
+    });
+  }
+
+  sort(int sortParam) {
+    showSorted = true;
+    print(sortParam);
+    sortedTicket = tickets;
+    if (sortParam == 0) {
+      sortedTicket.sort((a, b) => a.basePrice!.compareTo(b.basePrice!));
+    } else if (sortParam == 1) {
+      sortedTicket.sort((a, b) => a.date!.compareTo(b.date!));
+    } else {
+      sortedTicket = tickets;
+    }
   }
 }

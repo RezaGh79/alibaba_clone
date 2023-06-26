@@ -27,33 +27,34 @@ class HistoryTicketPage extends StatefulWidget {
 }
 
 class _HistoryTicketPageState extends State<HistoryTicketPage> {
-  bool showProgressBar = false;
+  bool showProgressBar = true;
   List<TicketModel> tickets = [];
 
   @override
   void initState() {
+    getTickets();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("تاریخچه بلیت ها")),
+      appBar: AppBar(centerTitle: true, title: const Text("تاریخ چه بلیت ها", style: TextStyle(fontFamily: 'font'))),
       body: showProgressBar
           ? const Center(child: SizedBox(width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
-          : Expanded(
-              child: ListView.builder(
-                itemCount: tickets.length,
-                itemBuilder: (context, i) {
-                  return Ticket(ticket: tickets[i]);
-                },
-              ),
-            ),
+          : ListView.builder(
+            itemCount: tickets.length,
+            itemBuilder: (context, i) {
+              return Ticket(ticket: tickets[i]);
+            },
+          ),
     );
   }
 
-  Future<void> getTickets() async {
-    final uri = Uri.parse("${GlobalVariables.BASE_URL_TICKETS}/api/travels?${GlobalVariables.token}");
+  void getTickets() async {
+    final uri = Uri.parse("${GlobalVariables.BASE_URL_TICKETS}/api/userTickets?token=${GlobalVariables.token}");
+
+    print(uri);
 
     final headers = {
       'Content-Type': 'application/json',
@@ -62,6 +63,7 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
     // Map<String, dynamic> body = {"username": username, "password": password, "otp": otp};
     // String jsonBody = json.encode(body);
     // final encoding = Encoding.getByName('utf-8');
+    print("here");
 
     Response response = await get(
       uri,
@@ -70,9 +72,10 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
       // encoding: encoding,
     );
 
+    print(response.body);
+
     if (response.statusCode < 400) {
-      // print(response.body);
-      tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson(i)).toList();
+      tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson1(i)).toList();
       setState(() {
         showProgressBar = false;
       });

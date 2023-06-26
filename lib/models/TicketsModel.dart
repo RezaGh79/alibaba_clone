@@ -41,4 +41,20 @@ class TicketModel {
         vehicleIdId: json['vehicleIdId'],
         occupiedSeats: json['occupiedSeats']);
   }
+
+  factory TicketModel.fromJson1(Map<String, dynamic> json) {
+    return TicketModel(
+      basePrice: json['basePrice'],
+      category: json['category'],
+      date: json['date'],
+      source: json['source'],
+      destination: json['destination'],
+      createdAt: '',
+      discount: '',
+      id: '',
+      updatedAt: '',
+      vehicleIdId: '',
+      occupiedSeats: [],
+    );
+  }
 }
