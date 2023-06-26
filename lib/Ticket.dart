@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:alibaba_clone/Screens/TransportPages/DifferentTransportaion/BusSeatView.dart';
 import 'package:alibaba_clone/models/TicketsModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,7 +42,7 @@ class Ticket extends StatelessWidget {
                         fontFamily: 'font',
                       )),
                   Spacer(),
-                  Text("پیک صبا", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 15)),
+                  Text("ایران ایر", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 15)),
                   SizedBox(width: 10)
                 ]),
                 const SizedBox(height: 10),
@@ -63,52 +65,53 @@ class Ticket extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font'),
                   )
                 ]),
-                // Row(
-                //     mainAxisAlignment: MainAxisAlignment.end, // use whichever suits your need
-                //     children: [
-                //       TextButton(
-                //           onPressed: () {},
-                //           child: const Text("قوانین جریمه و استرداد",
-                //               style: TextStyle(
-                //                 fontFamily: 'font',
-                //               ))),
-                //       SizedBox(width: 20),
-                //       TextButton(
-                //           onPressed: () {},
-                //           child: Text("نقشه صندلی‌ها",
-                //               style: TextStyle(
-                //                 fontFamily: 'font',
-                //               ))),
-                //       SizedBox(width: 5)
-                //     ]),
-                // Container(
-                //   width: double.infinity,
-                //   height: 0.5,
-                //   color: Colors.grey,
-                // ),
-                // SizedBox(height: 10),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 10),
-                //   child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       // use whichever suits your need
-                //       children: [
-                //         Directionality(
-                //             textDirection: TextDirection.rtl,
-                //             child: Text("${26 - ticket.occupiedSeats.length} صندلی خالی",
-                //                 style: TextStyle(
-                //                   fontFamily: 'font',
-                //                 ))),
-                //         Directionality(
-                //           textDirection: TextDirection.rtl,
-                //           child: Text(
-                //               "${ticket.basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} تومان",
-                //               style: const TextStyle(
-                //                 fontFamily: 'font',
-                //               )),
-                //         )
-                //       ]),
-                // ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end, // use whichever suits your need
+                    children: [
+                      TextButton(
+                          onPressed: () {},
+                          child: const Text("قوانین جریمه و استرداد",
+                              style: TextStyle(
+                                fontFamily: 'font',
+                              ))),
+                      // SizedBox(width: 20),
+                      // TextButton(
+                      //     onPressed: () {},
+                      //     child: Text("نقشه صندلی‌ها",
+                      //         style: TextStyle(
+                      //           fontFamily: 'font',
+                      //         )),
+                      // ),
+                      const SizedBox(width: 5)
+                    ]),
+                Container(
+                  width: double.infinity,
+                  height: 0.5,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // use whichever suits your need
+                      children: [
+                        Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Text("${108 - Random().nextInt(15) - ticket.occupiedSeats.length} صندلی خالی",
+                                style: TextStyle(
+                                  fontFamily: 'font',
+                                ))),
+                        Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: Text(
+                              "${ticket.basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} تومان",
+                              style: const TextStyle(
+                                fontFamily: 'font',
+                              )),
+                        )
+                      ]),
+                ),
               ],
             ),
           ),

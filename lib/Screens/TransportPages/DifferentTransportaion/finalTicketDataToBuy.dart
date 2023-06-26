@@ -206,16 +206,17 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8), // <-- Radius
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           onPressed: () {
+                            if (isDiscountDone) {
+                              toast('کد تخفیف را استفاده کرده اید');
+                              return;
+                            }
                             discountDone();
                           },
-                          child: Text("اعمال کد",
-                              style: const TextStyle(
-                                fontFamily: 'font',
-                              ))))),
+                          child: const Text("اعمال کد", style: TextStyle(fontFamily: 'font'))))),
               const SizedBox(width: 20),
               Expanded(
                 child: SizedBox(
@@ -250,7 +251,6 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
     );
   }
 
-  bool _value = true;
   bool isWinnerTakesAll = true;
   bool useWallet = true;
 
@@ -258,7 +258,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
     return Card(
       elevation: 3,
       child: Padding(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Padding(
             padding: const EdgeInsets.only(left: 10),
@@ -401,7 +401,7 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
       setState(() {
         if (useWallet) {
           int? current = widget.prefs.getInt('wallet');
-          widget.prefs.setInt('wallet', current! - (boughtTickets.length * widget.ticket.basePrice!));
+          widget.prefs.setInt('wallet', current! - (boughtTickets.length * priceWithoutDiscount).toInt());
         } else {
           toast('موجودی کافی ندارید');
         }
@@ -428,7 +428,10 @@ class _FinalTicketToBuyState extends State<FinalTicketToBuy> {
     );
   }
 
+  var isDiscountDone = false;
+
   void discountDone() {
+    isDiscountDone = true;
     setState(() {
       priceWithoutDiscount *= 0.8;
     });

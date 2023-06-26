@@ -32,7 +32,7 @@ class _BusPageState extends State<BusPage> {
   late Jalali dateJalali;
   List<TicketModel> tickets = [];
   bool showProgressBar = false;
-  RangeValues _currentRangeValues = const RangeValues(0, 100);
+  RangeValues _currentRangeValues = const RangeValues(90, 190);
   bool showSorted = false;
 
   @override
@@ -197,8 +197,8 @@ class _BusPageState extends State<BusPage> {
                                                         children: <Widget>[
                                                           RangeSlider(
                                                             values: _currentRangeValues,
-                                                            min: 0,
-                                                            max: 100,
+                                                            min: 90,
+                                                            max: 190,
                                                             divisions:
                                                                 (_currentRangeValues.end - _currentRangeValues.start)
                                                                     .toInt(),
@@ -337,57 +337,8 @@ class _BusPageState extends State<BusPage> {
         ));
   }
 
-  int _lowerValue = 80;
-  int _upperValue = 150;
-
-  Widget show123() {
-    return SizedBox(
-        height: 300.0,
-        width: 300.0,
-        child: Column(children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // Text("Lower value: $_lowerValue"),
-                // Text("Upper value: $_upperValue"),
-                SizedBox(
-                  height: 80,
-                  width: 300,
-                  child: RangeSlider(
-                    min: 18,
-                    max: 69,
-                    divisions: 51,
-                    values: RangeValues(_lowerValue.toDouble(), _upperValue.toDouble()),
-                    onChanged: (RangeValues values) {
-                      setState(() {
-                        _lowerValue = values.start.round();
-                        _upperValue = values.end.round();
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ]));
-  }
-
-  showAlertFilter() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Directionality(
-                textDirection: TextDirection.rtl,
-                child: Text("لیست شهرها",
-                    style: TextStyle(
-                      fontFamily: 'font',
-                    ))),
-            content: show123(),
-          );
-        });
-  }
+  // int _lowerValue = 90;
+  // int _upperValue = 190;
 
   void showOriginDestinationAlert(String originOrDestination) {
     showDialog(
@@ -433,6 +384,7 @@ class _BusPageState extends State<BusPage> {
     if (response.statusCode < 400) {
       // print(response.body);
       tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson(i)).toList();
+      GlobalVariables.copyTicks = tickets;
       setState(() {
         showProgressBar = false;
       });
@@ -453,21 +405,35 @@ class _BusPageState extends State<BusPage> {
   List<TicketModel> sortedTicket = [];
 
   filter() {
+    // print(_currentRangeValues.end.toInt());
+    // print(_currentRangeValues.start.toInt());
+    // tickets.forEach((element) {
+    //   print(element.basePrice);
+    // });
+    // print(GlobalVariables.copyTicks.length);
+    // print(_lowerValue);
+    // print(_upperValue);
     setState(() {
-      tickets.removeWhere((ticket) => ticket.basePrice! < _lowerValue || ticket.basePrice! > _upperValue);
+      tickets.removeWhere((ticket) =>
+          ticket.basePrice! / 1000 < _currentRangeValues.start.toInt() ||
+          ticket.basePrice! / 1000 > _currentRangeValues.end.toInt());
     });
   }
 
   sort(int sortParam) {
     showSorted = true;
-    print(sortParam);
     sortedTicket = tickets;
     if (sortParam == 0) {
       sortedTicket.sort((a, b) => a.basePrice!.compareTo(b.basePrice!));
     } else if (sortParam == 1) {
       sortedTicket.sort((a, b) => a.date!.compareTo(b.date!));
     } else {
-      sortedTicket = tickets;
+      setState(() {
+        tickets = GlobalVariables.copyTicks;
+        showSorted = false;
+      });
+
+      // sortedTicket = tickets;
     }
   }
 }
