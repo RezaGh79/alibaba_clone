@@ -20,11 +20,10 @@ class WelcomeImage extends StatelessWidget {
         Row(
           children: [
             const Spacer(),
-            Expanded(
-              flex: 8,
-              child: SvgPicture.asset(
-                "assets/icons/chat.svg",
-              ),
+            SizedBox(
+              width: 300,
+              height: 300,
+              child: SvgPicture.asset("assets/test/main123.svg"),
             ),
             const Spacer(),
           ],

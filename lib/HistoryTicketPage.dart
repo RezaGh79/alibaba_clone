@@ -43,11 +43,11 @@ class _HistoryTicketPageState extends State<HistoryTicketPage> {
       body: showProgressBar
           ? const Center(child: SizedBox(width: 42, height: 42, child: CircularProgressIndicator(strokeWidth: 4.2)))
           : ListView.builder(
-            itemCount: tickets.length,
-            itemBuilder: (context, i) {
-              return Ticket(ticket: tickets[i]);
-            },
-          ),
+              itemCount: tickets.length,
+              itemBuilder: (context, i) {
+                return Ticket(ticket: tickets[i], show: false);
+              },
+            ),
     );
   }
 

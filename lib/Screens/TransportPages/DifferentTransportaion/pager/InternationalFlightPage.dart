@@ -300,7 +300,7 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
                     itemCount: showSorted ? sortedTicket.length : tickets.length,
                     itemBuilder: (context, i) {
                       return Ticket(
-                        ticket: showSorted ? sortedTicket[i] : tickets[i],
+                        ticket: showSorted ? sortedTicket[i] : tickets[i], show: true,
                         // dateJalali: dateJalali,
                         // prefs: widget.prefs
                       );
@@ -606,7 +606,6 @@ class _InternationalFlightPageState extends State<InternationalFlightPage> {
     );
 
     print(response.body);
-
 
     if (response.statusCode < 400) {
       tickets = (json.decode(response.body) as List).map((i) => TicketModel.fromJson(i)).toList();

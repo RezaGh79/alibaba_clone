@@ -20,9 +20,10 @@ class LoginScreenTopImage extends StatelessWidget {
         Row(
           children: [
             const Spacer(),
-            Expanded(
-              flex: 8,
-              child: SvgPicture.asset("assets/icons/login.svg"),
+            SizedBox(
+              width: 300,
+              height: 300,
+              child: SvgPicture.asset("assets/test/login123.svg"),
             ),
             const Spacer(),
           ],

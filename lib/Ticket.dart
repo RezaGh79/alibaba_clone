@@ -8,8 +8,9 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Ticket extends StatelessWidget {
-  const Ticket({Key? key, required this.ticket}) : super(key: key);
+  const Ticket({Key? key, required this.ticket, required this.show}) : super(key: key);
   final TicketModel ticket;
+  final bool show;
 
   // final Jalali dateJalali;
   // final SharedPreferences prefs;
@@ -35,14 +36,15 @@ class Ticket extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Row(children: const [
+                Row(children: [
                   SizedBox(width: 20),
                   Text("VIP",
                       style: TextStyle(
                         fontFamily: 'font',
                       )),
                   Spacer(),
-                  Text("ایران ایر", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 15)),
+                  Text(show ? "ایران ایر" : "پیک صبا",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font', fontSize: 15)),
                   SizedBox(width: 10)
                 ]),
                 const SizedBox(height: 10),
@@ -65,7 +67,7 @@ class Ticket extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'font'),
                   )
                 ]),
-                Row(
+            show?    Row(
                     mainAxisAlignment: MainAxisAlignment.end, // use whichever suits your need
                     children: [
                       TextButton(
@@ -83,35 +85,39 @@ class Ticket extends StatelessWidget {
                       //         )),
                       // ),
                       const SizedBox(width: 5)
-                    ]),
-                Container(
-                  width: double.infinity,
-                  height: 0.5,
-                  color: Colors.grey,
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // use whichever suits your need
-                      children: [
-                        Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Text("${108 - Random().nextInt(15) - ticket.occupiedSeats.length} صندلی خالی",
-                                style: TextStyle(
-                                  fontFamily: 'font',
-                                ))),
-                        Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: Text(
-                              "${ticket.basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} تومان",
-                              style: const TextStyle(
-                                fontFamily: 'font',
-                              )),
-                        )
-                      ]),
-                ),
+                    ]) : Container(),
+                show
+                    ? Container(
+                        width: double.infinity,
+                        height: 0.5,
+                        color: Colors.grey,
+                      )
+                    : Container(),
+                show ? SizedBox(height: 10) : Container(),
+                show
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // use whichever suits your need
+                            children: [
+                              Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: Text("${108 - Random().nextInt(15) - ticket.occupiedSeats.length} صندلی خالی",
+                                      style: TextStyle(
+                                        fontFamily: 'font',
+                                      ))),
+                              Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text(
+                                    "${ticket.basePrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} تومان",
+                                    style: const TextStyle(
+                                      fontFamily: 'font',
+                                    )),
+                              )
+                            ]),
+                      )
+                    : Container(),
               ],
             ),
           ),
